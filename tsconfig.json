@@ -5,5 +5,12 @@
   // Include Astro's generated types plus every source file.
   "include": [".astro/types.d.ts", "**/*"],
   // Build output is generated code, so it is not type checked.
-  "exclude": ["dist"]
+  "exclude": ["dist"],
+  "compilerOptions": {
+    // Path alias: "@/styles/global.css" means "src/styles/global.css" from any folder,
+    // which avoids long relative paths like "../../../styles/global.css".
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
 }
