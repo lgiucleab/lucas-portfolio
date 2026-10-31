@@ -2,6 +2,7 @@
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
+import icon from "astro-icon";
 
 export default defineConfig({
   // Public address of the site, used later for canonical URLs, the sitemap and RSS.
@@ -14,6 +15,9 @@ export default defineConfig({
 
   // Packages the build for Vercel, including that server code.
   adapter: vercel(),
+
+  // astro-icon inlines SVG icons at build time, so they add no JavaScript to the browser.
+  integrations: [icon()],
 
   // Tailwind 4 runs as a Vite plugin, the officially recommended setup for Astro.
   vite: {

@@ -24,3 +24,4 @@ design-reference/
 .DS_Store
 Thumbs.db
 .idea/
+.claude/
