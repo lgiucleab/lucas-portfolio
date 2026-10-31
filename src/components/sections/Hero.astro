@@ -1,0 +1,75 @@
+---
+// First section: photo, availability badge, greeting, intro text and main buttons.
+import { render } from "astro:content";
+
+import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
+import Button from "@/components/ui/Button.astro";
+import Photo from "@/components/ui/Photo.astro";
+import Section from "@/components/ui/Section.astro";
+import { site } from "@/config/site";
+import type { Locale } from "@/i18n/config";
+import { localizedPath, useTranslations } from "@/i18n";
+import { getProfileEntry } from "@/lib/content";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// The intro text lives in src/content/profile/<language>/hero.md
+const { Content: Intro } = await render(await getProfileEntry("hero", locale));
+
+// LinkedIn and GitHub buttons, in this order, taken from the shared social list.
+const heroLinks = ["LinkedIn", "GitHub"].flatMap((label) =>
+  site.socials.filter((social) => social.label === label),
+);
+const linkedin = heroLinks[0];
+---
+
+<Section id="hero" class="flex min-h-[calc(100dvh-5rem)] flex-col justify-center gap-8">
+  <Fragment slot="background">
+    <BackgroundCircle class="-top-32 -right-32 size-[30rem]" />
+    <BackgroundCircle class="-bottom-48 -left-32 size-[24rem]" />
+  </Fragment>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <Photo name="avatar" alt={t("photo.avatar")} width={160} class="size-20 rounded-full" />
+    <a
+      href={linkedin?.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="border-line text-ink hover:border-ink inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors"
+    >
+      <!-- Small dot with a soft pulse, like a live status light. -->
+      <span aria-hidden="true" class="relative flex size-2">
+        <span class="bg-ink absolute size-full rounded-full motion-safe:animate-ping"></span>
+        <span class="bg-ink relative size-2 rounded-full"></span>
+      </span>
+      {t("hero.badge")}
+    </a>
+  </div>
+
+  <!-- The second line shifts right on wide screens, like the staggered title in the design. -->
+  <h1 class="text-display leading-none font-semibold">
+    <span class="block">{t("hero.greetingStart")}</span>
+    <span class="block sm:text-right">{t("hero.greetingEnd")}</span>
+  </h1>
+
+  <div class="max-w-text text-lg">
+    <Intro />
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3">
+    <Button href={localizedPath(locale, "", "contact")} arrow>
+      {t("hero.contact")}
+    </Button>
+    {heroLinks.map((social) => (
+      <Button variant="outline" href={social.href} icon={social.icon} external>
+        {social.label}
+      </Button>
+    ))}
+  </div>
+</Section>
