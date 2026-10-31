@@ -7,4 +7,4 @@ endDate: 2026-05-15
 link: https://portal.edu.gva.es/iesmiquelperisisegarra/
 ---
 
-Titulación obtenida con Matrícula de Honor.
+Titulación obtenida con Mención Honorífica.
