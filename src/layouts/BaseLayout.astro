@@ -1,0 +1,60 @@
+---
+// Page frame used by every public page: <head>, header, main content area and footer.
+// The page content goes between the tags.
+import "@/styles/global.css";
+import { ClientRouter } from "astro:transitions";
+
+import Footer from "@/components/layout/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import ThemeScript from "@/components/layout/ThemeScript.astro";
+import { defaultLocale, locales, type Locale } from "@/i18n/config";
+import { localizedPath, pathWithoutLocale, useTranslations } from "@/i18n";
+
+interface Props {
+  // The language of this page.
+  locale: Locale;
+  // Translated browser tab title and search result title.
+  title: string;
+  // Translated search result description.
+  description: string;
+}
+
+const { locale, title, description } = Astro.props;
+const t = useTranslations(locale);
+
+// The same page in each language, for search engines. Phase 9 moves this into <SEO>.
+const path = pathWithoutLocale(Astro.url.pathname);
+const absoluteUrl = (code: Locale) => new URL(localizedPath(code, path), Astro.site).href;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={absoluteUrl(locale)} />
+    {locales.map((code) => (
+      <link rel="alternate" hreflang={code} href={absoluteUrl(code)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={absoluteUrl(defaultLocale)} />
+    <ThemeScript />
+    <!-- Turns page changes into smooth View Transitions. -->
+    <ClientRouter />
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <!-- Hidden until focused, so keyboard users can jump past the navigation. -->
+    <a
+      href="#main-content"
+      class="bg-accent text-on-accent sr-only z-50 rounded-full px-5 py-2 focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
+    >
+      {t("nav.skipToContent")}
+    </a>
+    <Header locale={locale} />
+    <main id="main-content" class="flex-1">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>

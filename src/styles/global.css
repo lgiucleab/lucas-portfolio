@@ -92,6 +92,13 @@
 /* 4. BASE ELEMENT STYLES ----------------------------------------------------- */
 
 @layer base {
+  html {
+    /* Anchor links glide to their section, unless reduced motion is requested. */
+    scroll-behavior: smooth;
+    /* Stops sections from landing underneath the sticky header. */
+    scroll-padding-top: 6rem;
+  }
+
   body {
     @apply bg-page font-sans text-muted antialiased;
     /* Smooth change of colors when switching theme. */
