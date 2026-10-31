@@ -1,0 +1,4 @@
+/* Global stylesheet, loaded by every page. Phase 2 adds the design tokens here. */
+
+/* Loads Tailwind's reset, default theme and utility classes. */
+@import "tailwindcss";
