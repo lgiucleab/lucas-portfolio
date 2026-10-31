@@ -1,0 +1,101 @@
+---
+// Featured projects. Every file in src/content/projects/<language>/ becomes one project here.
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+
+import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
+import Button from "@/components/ui/Button.astro";
+import Section from "@/components/ui/Section.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import Tag from "@/components/ui/Tag.astro";
+import { site } from "@/config/site";
+import { techIcons } from "@/config/tech-icons";
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n";
+import { getLocalizedEntries } from "@/lib/content";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Lower "order" values come first.
+const entries = await getLocalizedEntries("projects", locale);
+entries.sort((a, b) => a.data.order - b.data.order);
+
+// render() prepares each project's description text for display.
+const rendered = await Promise.all(entries.map((entry) => render(entry)));
+
+// The account's GitHub address comes from the shared social list.
+const github = site.socials.find((social) => social.label === "GitHub");
+---
+
+<Section id="projects" class="space-y-16">
+  <BackgroundCircle slot="background" class="top-1/3 -right-48 size-[36rem]" />
+  <SectionLabel>{t("projects.title")}</SectionLabel>
+
+  {entries.map((entry, index) => {
+    const Description = rendered[index]?.Content;
+    const { title, repo, private: isPrivate, tags, image, preview } = entry.data;
+    return (
+      <article class="reveal grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+        {/* Every second project swaps sides on wide screens, as in the design. */}
+        <div class:list={["min-w-0", index % 2 === 1 && "lg:order-last"]}>
+          {image ? (
+            <Image
+              src={image}
+              alt={title}
+              width={720}
+              class="rounded-panel aspect-[16/10] w-full object-cover"
+            />
+          ) : (
+            <div
+              aria-hidden="true"
+              class="rounded-panel border-line bg-surface font-display text-ink relative flex aspect-[16/10] items-center justify-center overflow-hidden border text-2xl sm:text-4xl"
+            >
+              <BackgroundCircle class="-right-16 -bottom-24 size-72" />
+              {title}
+            </div>
+          )}
+        </div>
+
+        <div class="min-w-0 space-y-5">
+          <h3 class="text-2xl font-medium">{title}</h3>
+          <ul class="flex flex-wrap gap-2">
+            {isPrivate && (
+              <li>
+                <Tag icon="lucide:lock">{t("projects.private")}</Tag>
+              </li>
+            )}
+            {tags.map((tag) => (
+              <li>{techIcons[tag] ? <Tag icon={techIcons[tag]}>{tag}</Tag> : <Tag>{tag}</Tag>}</li>
+            ))}
+          </ul>
+          <div>{Description && <Description />}</div>
+          {(!isPrivate || preview) && (
+            <div class="flex flex-wrap gap-3">
+              {!isPrivate && (
+                <Button
+                  variant="outline"
+                  href={`${github?.href}/${repo}`}
+                  icon="simple-icons:github"
+                  external
+                >
+                  {t("projects.code")}
+                </Button>
+              )}
+              {preview && (
+                <Button href={preview} external arrow>
+                  {t("projects.preview")}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      </article>
+    );
+  })}
+</Section>
