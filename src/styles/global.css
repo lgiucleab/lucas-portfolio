@@ -1,4 +1,134 @@
-/* Global stylesheet, loaded by every page. Phase 2 adds the design tokens here. */
+/*
+ * Global stylesheet and design system, loaded by every page.
+ * To restyle the whole site, edit the values in sections 2 and 3.
+ */
+
+/* 1. IMPORTS ---------------------------------------------------------------- */
 
 /* Loads Tailwind's reset, default theme and utility classes. */
 @import "tailwindcss";
+
+/* Self-hosted variable fonts. "wght" means one file covers every font weight. */
+@import "@fontsource-variable/fira-code/wght.css";
+@import "@fontsource-variable/open-sans/wght.css";
+@import "@fontsource-variable/open-sans/wght-italic.css";
+
+/* Makes Tailwind's "dark:" prefix follow our data-theme attribute, not the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* 2. THEME COLORS ------------------------------------------------------------
+ * Each theme gives the same names different values, so components never need
+ * to know which theme is active. The theme script sets data-theme on <html>.
+ * Dark is the default, so the site still works if JavaScript is off.
+ */
+
+:root {
+  /* Tells the browser to draw scrollbars and form controls in dark style. */
+  color-scheme: dark;
+
+  --theme-page: #121212; /* Page background */
+  --theme-surface: #1a1a1a; /* Cards, when they need to stand out from the page */
+  --theme-ink: #f5f5f5; /* Headings and emphasized text */
+  --theme-muted: #a6a6a6; /* Secondary body text */
+  --theme-line: #3d3d3d; /* Thin borders and background circles */
+  --theme-accent: #f5f5f5; /* Solid pill buttons */
+  --theme-on-accent: #121212; /* Text and icons on top of the accent color */
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --theme-page: #f5f5f5;
+  --theme-surface: #ffffff;
+  --theme-ink: #121212;
+  --theme-muted: #595959; /* Darker than #a6a6a6, which is unreadable on a light page */
+  --theme-line: #c4c4c4;
+  --theme-accent: #121212;
+  --theme-on-accent: #f5f5f5;
+}
+
+/* 3. DESIGN TOKENS -----------------------------------------------------------
+ * Tailwind creates classes from these names: --color-ink gives text-ink and
+ * bg-ink, --radius-card gives rounded-card, and so on.
+ * "inline" keeps the var() references, so colors change live with the theme.
+ */
+
+@theme inline {
+  /* Colors: names point at the theme values in section 2. */
+  --color-page: var(--theme-page);
+  --color-surface: var(--theme-surface);
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+  --color-line: var(--theme-line);
+  --color-accent: var(--theme-accent);
+  --color-on-accent: var(--theme-on-accent);
+
+  /* Fonts: font-display for headings and labels, font-sans for body text. */
+  --font-display: "Fira Code Variable", ui-monospace, monospace;
+  --font-sans: "Open Sans Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type sizes: clamp(smallest, scales with screen width, largest). */
+  --text-display: clamp(2.75rem, 10vw, 6.5rem); /* Hero title */
+  --text-title: clamp(2.25rem, 7vw, 4.5rem); /* Large page and section titles */
+
+  /* Spacing and widths. */
+  --spacing-section: clamp(5rem, 12vw, 9rem); /* Gap between sections: py-section */
+  --spacing-gutter: clamp(1rem, 4vw, 2.5rem); /* Page side margin: px-gutter */
+  --container-page: 72rem; /* Maximum content width: max-w-page */
+  --container-text: 40rem; /* Comfortable reading width: max-w-text */
+
+  /* Corner radius. Pills use Tailwind's rounded-full. */
+  --radius-card: 2rem; /* Cards: rounded-card */
+  --radius-panel: 3rem; /* Large panels and images: rounded-panel */
+
+  /* The design is flat: depth comes from borders, so the only shadow is subtle. */
+  --shadow-soft: 0 1rem 2.5rem -1.5rem rgb(0 0 0 / 0.35);
+
+  /* Animation speed. */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 200ms;
+}
+
+/* 4. BASE ELEMENT STYLES ----------------------------------------------------- */
+
+@layer base {
+  body {
+    @apply bg-page font-sans text-muted antialiased;
+    /* Smooth change of colors when switching theme. */
+    transition:
+      background-color 200ms,
+      color 200ms;
+  }
+
+  /* Headings use the code-style font and the strongest text color. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+  }
+
+  /* Highlighted key words: italic and brighter, as in the Behance design. */
+  em {
+    @apply text-ink italic;
+  }
+
+  /* Visible keyboard focus on every interactive element. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ink;
+  }
+}
+
+/* 5. ACCESSIBILITY ----------------------------------------------------------- */
+
+/* Visitors who ask their system for less motion get no animations at all. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
