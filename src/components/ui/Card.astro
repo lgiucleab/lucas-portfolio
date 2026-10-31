@@ -1,0 +1,24 @@
+---
+// Rounded card with a thin border. The content goes between the tags.
+
+interface Props {
+  // Which HTML tag to use. "article" suits self-contained items like blog posts.
+  as?: "div" | "article" | "li";
+  // Brightens the border on hover. Use it when the card contains a link.
+  interactive?: boolean;
+  // Extra Tailwind classes from the parent.
+  class?: string;
+}
+
+const { as: Element = "div", interactive = false, class: className } = Astro.props;
+---
+
+<Element
+  class:list={[
+    "rounded-card border-line border p-6 transition-colors sm:p-8",
+    interactive && "hover:border-ink",
+    className,
+  ]}
+>
+  <slot />
+</Element>

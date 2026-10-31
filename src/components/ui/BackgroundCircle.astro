@@ -1,0 +1,16 @@
+---
+// Thin decorative circle from the design. Its parent needs "relative overflow-hidden".
+
+interface Props {
+  // Tailwind classes for size and position, such as "size-96 -top-20 right-0".
+  class: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<!-- aria-hidden hides it from screen readers; pointer-events-none lets clicks pass through. -->
+<div
+  aria-hidden="true"
+  class:list={["border-line pointer-events-none absolute rounded-full border", className]}
+></div>

@@ -1,0 +1,39 @@
+---
+// Round button holding only an icon, like the design's arrows and carousel controls.
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  // Iconify name, such as "lucide:arrow-up-right".
+  icon: string;
+  // Text for screen readers. Required, because an icon alone has no name.
+  label: string;
+  // Where to go. Without it, a real <button> is rendered.
+  href?: string;
+  // Opens the link in a new tab.
+  external?: boolean;
+  // true shows the solid style, false the thin outline.
+  solid?: boolean;
+  // Extra Tailwind classes from the parent.
+  class?: string;
+}
+
+const { icon, label, href, external = false, solid = false, class: className } = Astro.props;
+
+const linkAttributes = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+const Element = href ? "a" : "button";
+const elementAttributes = href ? { href, ...linkAttributes } : { type: "button" as const };
+---
+
+<Element
+  {...elementAttributes}
+  aria-label={label}
+  class:list={[
+    "flex size-11 items-center justify-center rounded-full transition-colors",
+    solid
+      ? "bg-accent text-on-accent"
+      : "border-line text-ink hover:bg-accent hover:text-on-accent border",
+    className,
+  ]}
+>
+  <Icon name={icon} class="size-4" aria-hidden="true" />
+</Element>

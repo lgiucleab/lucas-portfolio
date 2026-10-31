@@ -1,0 +1,20 @@
+---
+// Section heading in the design's code style: "... /Projects ...".
+// Write only the name between the tags. The dots and slash are added here.
+
+interface Props {
+  // Heading level, so the page outline stays correct.
+  as?: "h2" | "h3";
+}
+
+const { as: Element = "h2" } = Astro.props;
+---
+
+<!-- "flex" drops the line breaks below, which would otherwise show as spaces.
+     "whitespace-pre" keeps the one space written before the closing dots. -->
+<Element class="text-ink font-display flex text-base font-medium whitespace-pre">
+  {/* The decoration is hidden from screen readers, which would read it aloud. */}
+  <span aria-hidden="true">... /</span>
+  <slot />
+  <span aria-hidden="true"> ...</span>
+</Element>

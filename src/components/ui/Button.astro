@@ -1,0 +1,62 @@
+---
+// Pill button in the Behance style. Renders a link when given href, otherwise a <button>.
+// The button text goes between the tags: <Button href="/en/blog">Read more</Button>
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  // "primary" is the solid pill; "outline" is the thin bordered pill.
+  variant?: "primary" | "outline";
+  // Where to go. Without it, a real <button> is rendered.
+  href?: string;
+  // Opens the link in a new tab, for sites outside the portfolio.
+  external?: boolean;
+  // Button behaviour inside a form. Ignored for links.
+  type?: "button" | "submit";
+  // Iconify name shown before the text, such as "simple-icons:github".
+  icon?: string;
+  // Adds the round arrow companion from the design.
+  arrow?: boolean;
+  // Extra Tailwind classes from the parent.
+  class?: string;
+}
+
+const {
+  variant = "primary",
+  href,
+  external = false,
+  type = "button",
+  icon,
+  arrow = false,
+  class: className,
+} = Astro.props;
+
+// Shared by the pill in both link and button form.
+const pillClasses = [
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-7 text-sm italic transition-colors",
+  variant === "primary"
+    ? "bg-accent text-on-accent"
+    : "border border-line text-muted group-hover:border-ink group-hover:text-ink",
+];
+
+// Link-only attributes. rel protects the opener page when opening a new tab.
+const linkAttributes = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+const Element = href ? "a" : "button";
+const elementAttributes = href ? { href, ...linkAttributes } : { type };
+---
+
+<Element {...elementAttributes} class:list={["group inline-flex items-center gap-2", className]}>
+  <span class:list={pillClasses}>
+    {icon && <Icon name={icon} class="size-4" aria-hidden="true" />}
+    <slot />
+  </span>
+  {arrow && (
+    <span
+      class:list={[
+        "flex size-11 items-center justify-center rounded-full transition-transform duration-300 ease-soft group-hover:translate-x-1",
+        variant === "primary" ? "bg-accent text-on-accent" : "border border-line text-ink",
+      ]}
+    >
+      <Icon name="lucide:arrow-right" class="size-4" aria-hidden="true" />
+    </span>
+  )}
+</Element>
