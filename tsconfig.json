@@ -1,0 +1,9 @@
+// TypeScript settings for the whole project.
+{
+  // Astro's "strict" preset: strict type checking, which the project's quality bar requires.
+  "extends": "astro/tsconfigs/strict",
+  // Include Astro's generated types plus every source file.
+  "include": [".astro/types.d.ts", "**/*"],
+  // Build output is generated code, so it is not type checked.
+  "exclude": ["dist"]
+}
