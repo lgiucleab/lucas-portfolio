@@ -1,0 +1,40 @@
+---
+// About section: personal text beside a second photo.
+import { render } from "astro:content";
+
+import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
+import Photo from "@/components/ui/Photo.astro";
+import Section from "@/components/ui/Section.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n";
+import { getProfileEntry } from "@/lib/content";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// The text lives in src/content/profile/<language>/about.md
+const { Content: AboutText } = await render(await getProfileEntry("about", locale));
+---
+
+<Section id="about" class="space-y-12">
+  <BackgroundCircle slot="background" class="bottom-0 -left-40 size-[28rem]" />
+  <SectionLabel>{t("about.title")}</SectionLabel>
+
+  <div class="grid items-center gap-10 md:grid-cols-[3fr_2fr] lg:gap-16">
+    <div class="space-y-4 text-lg">
+      <AboutText />
+    </div>
+    <Photo
+      name="about"
+      alt={t("photo.about")}
+      width={560}
+      class="rounded-panel mx-auto aspect-square w-full max-w-sm text-4xl"
+    />
+  </div>
+</Section>
