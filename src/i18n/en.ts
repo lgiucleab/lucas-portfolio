@@ -37,8 +37,41 @@ export const en = {
   "footer.social": "Social links",
   "footer.email": "Email",
 
-  // Temporary text, replaced in Phases 5 and 7.
-  "placeholder.section": "This section is built in Phase 5.",
+  // Hero section. The greeting is split so its two parts sit on separate lines.
+  "hero.greetingStart": "Hey,",
+  "hero.greetingEnd": "I'm Lucas",
+  "hero.badge": "Available for side projects",
+  "hero.contact": "Contact me",
+
+  // Experience and education timeline.
+  "timeline.title": "Experience & Education",
+  "timeline.work": "Work",
+  "timeline.education": "Education",
+  "timeline.present": "Present",
+  "timeline.learnMore": "Learn more",
+
+  // Projects section.
+  "projects.title": "Projects",
+  "projects.code": "Code",
+  "projects.preview": "Preview",
+  "projects.private": "Private",
+
+  // Skills section.
+  "skills.title": "Skills",
+  "skills.languages": "Languages",
+  "skills.ai": "AI",
+  "skills.tools": "Tools",
+  "skills.aBit": "a bit",
+
+  // About section.
+  "about.title": "About me",
+
+  // Photo descriptions for screen readers.
+  "photo.avatar": "Portrait of Lucas",
+  "photo.about": "Lucas Giuclea Balan",
+
+  // Temporary text, replaced in Phases 7 and 8.
+  "placeholder.contact": "The contact form arrives in Phase 8.",
   "placeholder.blog": "Articles are coming soon.",
 } as const;
 

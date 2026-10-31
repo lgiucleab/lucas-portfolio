@@ -37,7 +37,40 @@ export const es: Record<TranslationKey, string> = {
   "footer.social": "Redes sociales",
   "footer.email": "Correo",
 
-  // Temporary text, replaced in Phases 5 and 7.
-  "placeholder.section": "Esta sección se construye en la Fase 5.",
+  // Hero section. The greeting is split so its two parts sit on separate lines.
+  "hero.greetingStart": "Hola,",
+  "hero.greetingEnd": "soy Lucas",
+  "hero.badge": "Disponible para algunos proyectos",
+  "hero.contact": "Contáctame",
+
+  // Experience and education timeline.
+  "timeline.title": "Experiencia y formación",
+  "timeline.work": "Trabajo",
+  "timeline.education": "Formación",
+  "timeline.present": "Actualidad",
+  "timeline.learnMore": "Saber más",
+
+  // Projects section.
+  "projects.title": "Proyectos",
+  "projects.code": "Código",
+  "projects.preview": "Ver demo",
+  "projects.private": "Privado",
+
+  // Skills section.
+  "skills.title": "Habilidades",
+  "skills.languages": "Lenguajes",
+  "skills.ai": "IA",
+  "skills.tools": "Herramientas",
+  "skills.aBit": "un poco",
+
+  // About section.
+  "about.title": "Sobre mí",
+
+  // Photo descriptions for screen readers.
+  "photo.avatar": "Retrato de Lucas",
+  "photo.about": "Lucas Giuclea Balan",
+
+  // Temporary text, replaced in Phases 7 and 8.
+  "placeholder.contact": "El formulario de contacto llega en la Fase 8.",
   "placeholder.blog": "Los artículos llegarán pronto.",
 };

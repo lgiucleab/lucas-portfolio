@@ -1,0 +1,42 @@
+---
+// Shows a photo from src/assets/photos/, or an "LG" placeholder until the file exists.
+// To add a photo, drop avatar.jpg or about.jpg in that folder. png, webp and avif also work.
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  // File name without its extension.
+  name: "avatar" | "about";
+  // Translated description for screen readers.
+  alt: string;
+  // Largest display width in pixels. Astro resizes the photo to fit.
+  width: number;
+  // Tailwind classes for size and shape.
+  class?: string;
+}
+
+const { name, alt, width, class: className } = Astro.props;
+
+// Lists every image in the folder at build time, so no code changes when a file is added.
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/photos/*.{jpg,jpeg,png,webp,avif}",
+  { eager: true },
+);
+const photoPath = Object.keys(photos).find((path) => path.includes(`/${name}.`));
+const photo = photoPath ? photos[photoPath]?.default : undefined;
+---
+
+{photo ? (
+  <Image src={photo} alt={alt} width={width} class:list={["object-cover", className]} />
+) : (
+  <div
+    role="img"
+    aria-label={alt}
+    class:list={[
+      "border-line bg-surface text-muted font-display flex items-center justify-center border",
+      className,
+    ]}
+  >
+    LG
+  </div>
+)}

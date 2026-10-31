@@ -126,7 +126,29 @@
   }
 }
 
-/* 5. ACCESSIBILITY ----------------------------------------------------------- */
+/* 5. SCROLL REVEAL ------------------------------------------------------------
+ * Add class="reveal" to fade an element in as it scrolls into view.
+ * This is pure CSS, so with no support or reduced motion the element simply stays visible.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+/* 6. ACCESSIBILITY ----------------------------------------------------------- */
 
 /* Visitors who ask their system for less motion get no animations at all. */
 @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,21 @@
+---
+// Standard page section: full-width outer area with centred, width-limited content.
+// The outer area clips the background circles, so they never cause sideways scrolling.
+
+interface Props {
+  // Anchor name. It must match the link in Header.astro.
+  id: string;
+  // Extra Tailwind classes for the inner content area.
+  class?: string;
+}
+
+const { id, class: className } = Astro.props;
+---
+
+<section id={id} class="relative overflow-hidden">
+  <!-- Named slot for BackgroundCircle, which sits behind the content. -->
+  <slot name="background" />
+  <div class:list={["max-w-page px-gutter py-section relative mx-auto", className]}>
+    <slot />
+  </div>
+</section>
