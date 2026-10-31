@@ -9,6 +9,18 @@ export default defineConfig({
   // TODO: Lucas — replace with the real address after deploying to Vercel (Phase 11).
   site: "https://lucas-giuclea-balan.vercel.app",
 
+  // Built-in i18n routing. If you add a language, also add it to src/i18n/config.ts.
+  i18n: {
+    locales: ["en", "es"],
+    defaultLocale: "en",
+    routing: {
+      // Both languages get a prefix: /en/... and /es/...
+      prefixDefaultLocale: true,
+      // Keeps src/pages/index.astro at "/", which chooses the visitor's language.
+      redirectToDefaultLocale: false,
+    },
+  },
+
   // "static" pre-renders every page to HTML at build time, so pages stay fast.
   // Server code is opt-in: only the contact form's Astro Action will run on demand.
   output: "static",
