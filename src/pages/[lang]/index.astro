@@ -1,0 +1,37 @@
+---
+// Home page, built once per language. The sections below are temporary shells
+// that let the navbar be tested. Phase 5 replaces each one with the real section.
+import type { GetStaticPaths } from "astro";
+
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import type { Locale } from "@/i18n/config";
+import { getLocaleStaticPaths, useTranslations } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const getStaticPaths = (() => getLocaleStaticPaths()) satisfies GetStaticPaths;
+
+// getStaticPaths only creates pages for valid languages, so this cast is safe.
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+// Temporary section list. The ids must match the links in Header.astro.
+const sections = [
+  { id: "experience", title: t("nav.experience") },
+  { id: "projects", title: t("nav.projects") },
+  { id: "skills", title: t("nav.skills") },
+  { id: "about", title: t("nav.about") },
+  { id: "contact", title: t("nav.contact") },
+];
+---
+
+<BaseLayout locale={locale} title={t("meta.title")} description={t("meta.description")}>
+  <section id="hero" class="max-w-page px-gutter py-section mx-auto">
+    <h1 class="text-display leading-none font-semibold">Hey, I'm Lucas</h1>
+  </section>
+  {sections.map((section) => (
+    <section id={section.id} class="max-w-page px-gutter py-section mx-auto min-h-[80dvh]">
+      <SectionLabel>{section.title}</SectionLabel>
+      <p class="mt-6">{t("placeholder.section")}</p>
+    </section>
+  ))}
+</BaseLayout>

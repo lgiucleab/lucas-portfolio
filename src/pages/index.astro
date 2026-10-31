@@ -1,9 +1,5 @@
 ---
-// Temporary home page that proves the project builds. Phase 3 replaces it with
-// the language redirect and the real pages.
-
-// Importing the stylesheet here is what adds Tailwind to the page.
-import "@/styles/global.css";
+// Root page at "/". It holds no content: it only sends visitors to /en/ or /es/.
 ---
 
 <!doctype html>
@@ -12,11 +8,42 @@ import "@/styles/global.css";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Lucas Giuclea Balan</title>
+    <!-- Only the /en/ and /es/ pages should appear in search results. -->
+    <meta name="robots" content="noindex" />
+    <!-- Without JavaScript, the browser goes straight to the English site. -->
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=/en/" />
+    </noscript>
+    <!-- is:inline runs this immediately, before anything is drawn. -->
+    <script is:inline>
+      (function () {
+        const STORAGE_KEY = "language";
+        let language = null;
+
+        // Storage can be blocked, which makes every visit count as a first visit.
+        try {
+          language = localStorage.getItem(STORAGE_KEY);
+        } catch {
+          language = null;
+        }
+
+        // First visit: use the browser's preferred language, then remember the result.
+        if (language !== "en" && language !== "es") {
+          const preferred = navigator.languages ?? [navigator.language];
+          language = preferred[0]?.toLowerCase().startsWith("es") ? "es" : "en";
+          try {
+            localStorage.setItem(STORAGE_KEY, language);
+          } catch {
+            // Nothing to do: the redirect below still works.
+          }
+        }
+
+        // replace() keeps "/" out of history, so the Back button is not trapped here.
+        location.replace("/" + language + "/");
+      })();
+    </script>
   </head>
   <body>
-    <main>
-      <h1 class="text-3xl font-bold">Lucas Giuclea Balan</h1>
-      <p>Portfolio under construction.</p>
-    </main>
+    <a href="/en/">English</a> · <a href="/es/">Español</a>
   </body>
 </html>

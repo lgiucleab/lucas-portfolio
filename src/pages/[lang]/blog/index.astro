@@ -1,0 +1,21 @@
+---
+// Temporary blog page, so the navbar link and language switcher work. Phase 7 replaces it.
+import type { GetStaticPaths } from "astro";
+
+import type { Locale } from "@/i18n/config";
+import { getLocaleStaticPaths, useTranslations } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export const getStaticPaths = (() => getLocaleStaticPaths()) satisfies GetStaticPaths;
+
+// getStaticPaths only creates pages for valid languages, so this cast is safe.
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+---
+
+<BaseLayout locale={locale} title={t("meta.blogTitle")} description={t("meta.blogDescription")}>
+  <section class="max-w-page px-gutter py-section mx-auto">
+    <h1 class="text-title leading-none font-semibold">{t("nav.blog")}</h1>
+    <p class="mt-6">{t("placeholder.blog")}</p>
+  </section>
+</BaseLayout>
