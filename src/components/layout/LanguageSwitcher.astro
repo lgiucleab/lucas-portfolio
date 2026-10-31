@@ -1,0 +1,56 @@
+---
+// EN / ES links that keep the visitor on the same page and section.
+// Header.astro adds the current section to these links while the visitor scrolls.
+import { localeNames, locales, type Locale } from "@/i18n/config";
+import { localizedPath, pathWithoutLocale, useTranslations } from "@/i18n";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const currentPath = pathWithoutLocale(Astro.url.pathname);
+---
+
+<nav aria-label={t("language.label")}>
+  <ul class="font-sans text-sm leading-tight">
+    {locales.map((code) => (
+      <li>
+        <a
+          href={localizedPath(code, currentPath)}
+          hreflang={code}
+          lang={code}
+          aria-label={localeNames[code]}
+          aria-current={code === locale ? "true" : undefined}
+          data-language-link={code}
+          class="text-muted hover:text-ink aria-[current]:text-ink capitalize transition-colors aria-[current]:underline"
+        >
+          {code}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // Remembers the visitor's choice, so "/" sends them to this language next time.
+  function initLanguageLinks() {
+    const links = document.querySelectorAll<HTMLAnchorElement>("[data-language-link]");
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        // Storage can be blocked, and the switch still works without it.
+        try {
+          localStorage.setItem("language", link.dataset.languageLink ?? "");
+        } catch {
+          return;
+        }
+      });
+    });
+  }
+
+  // Runs on the first load and after every View Transition.
+  document.addEventListener("astro:page-load", initLanguageLinks);
+</script>

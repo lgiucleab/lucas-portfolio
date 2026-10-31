@@ -1,0 +1,54 @@
+---
+// Site footer: name in the large design style, contact link, social links and copyright.
+import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
+import Button from "@/components/ui/Button.astro";
+import { site } from "@/config/site";
+import type { Locale } from "@/i18n/config";
+import { localizedPath, useTranslations } from "@/i18n";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+// Set at build time. The daily rebuild keeps it correct.
+const year = new Date().getFullYear();
+---
+
+<footer class="border-line relative overflow-hidden border-t">
+  <BackgroundCircle class="-bottom-64 -left-32 size-[32rem]" />
+
+  <div class="max-w-page px-gutter relative mx-auto space-y-10 py-16">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="text-title font-display text-ink leading-tight font-semibold">Lucas Giuclea</p>
+        <p class="mt-2">{t("footer.role")}</p>
+      </div>
+      <Button href={localizedPath(locale, "", "contact")} arrow>
+        {t("nav.contact")}
+      </Button>
+    </div>
+
+    <ul aria-label={t("footer.social")} class="flex flex-wrap gap-3">
+      {site.socials.map((social) => (
+        <li>
+          <Button variant="outline" href={social.href} icon={social.icon} external>
+            {social.label}
+          </Button>
+        </li>
+      ))}
+      <li>
+        <Button variant="outline" href={`mailto:${site.email}`} icon="lucide:mail">
+          {t("footer.email")}
+        </Button>
+      </li>
+    </ul>
+
+    <p class="text-sm">
+      © {year} {site.name}. {t("footer.rights")}
+    </p>
+  </div>
+</footer>

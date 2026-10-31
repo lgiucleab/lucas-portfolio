@@ -1,0 +1,170 @@
+---
+// Sticky site header: name, navigation, language and theme switchers, and the phone menu.
+// Also highlights the navigation link of the section on screen.
+import { Icon } from "astro-icon/components";
+
+import type { Locale } from "@/i18n/config";
+import { localizedPath, pathWithoutLocale, useTranslations } from "@/i18n";
+
+import LanguageSwitcher from "./LanguageSwitcher.astro";
+import ThemeSwitcher from "./ThemeSwitcher.astro";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+const onBlog = pathWithoutLocale(Astro.url.pathname).startsWith("blog");
+
+// Navigation links, in display order. "section" must match a section id on the home page.
+const navItems = [
+  {
+    label: t("nav.experience"),
+    href: localizedPath(locale, "", "experience"),
+    section: "experience",
+  },
+  { label: t("nav.projects"), href: localizedPath(locale, "", "projects"), section: "projects" },
+  { label: t("nav.skills"), href: localizedPath(locale, "", "skills"), section: "skills" },
+  { label: t("nav.about"), href: localizedPath(locale, "", "about"), section: "about" },
+  { label: t("nav.blog"), href: localizedPath(locale, "blog") },
+  { label: t("nav.contact"), href: localizedPath(locale, "", "contact"), section: "contact" },
+];
+---
+
+<header class="bg-page/85 sticky top-0 z-40 backdrop-blur-md">
+  <div class="max-w-page px-gutter relative mx-auto flex h-20 items-center justify-between gap-4">
+    <a
+      href={localizedPath(locale)}
+      aria-label={t("nav.home")}
+      class="text-ink text-sm leading-tight"
+    >
+      Lucas
+      <br />
+      Giuclea
+    </a>
+
+    <!-- Below the lg width this is a dropdown panel; from lg upward it sits in the bar. -->
+    <nav
+      id="site-navigation"
+      aria-label={t("nav.label")}
+      data-site-navigation
+      class="bg-page border-line rounded-card absolute inset-x-4 top-full hidden border p-4 data-[open]:block lg:static lg:block lg:border-0 lg:bg-transparent lg:p-0"
+    >
+      <ul class="flex flex-col gap-1 lg:flex-row lg:gap-8">
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              data-section-link={item.section}
+              aria-current={!item.section && onBlog ? "page" : undefined}
+              class="text-muted hover:text-ink aria-[current]:text-ink block py-2 text-sm transition-colors aria-[current]:underline aria-[current]:underline-offset-4 lg:py-0"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-4">
+      <LanguageSwitcher locale={locale} />
+      <ThemeSwitcher
+        legend={t("theme.legend")}
+        labels={{ light: t("theme.light"), dark: t("theme.dark"), system: t("theme.system") }}
+      />
+      <button
+        type="button"
+        data-menu-toggle
+        data-label-open={t("nav.openMenu")}
+        data-label-close={t("nav.closeMenu")}
+        aria-label={t("nav.openMenu")}
+        aria-expanded="false"
+        aria-controls="site-navigation"
+        class="border-line text-ink flex size-11 items-center justify-center rounded-full border lg:hidden"
+      >
+        <Icon name="lucide:menu" class="size-4" aria-hidden="true" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  // The active-section observer is kept here so it can be replaced after each page change.
+  let sectionObserver: IntersectionObserver | undefined;
+
+  // Opens and closes the phone menu.
+  function initMenu() {
+    const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+    const navigation = document.querySelector<HTMLElement>("[data-site-navigation]");
+    if (!toggle || !navigation) return;
+
+    function setOpen(open: boolean) {
+      if (!toggle || !navigation) return;
+      navigation.toggleAttribute("data-open", open);
+      toggle.setAttribute("aria-expanded", String(open));
+      const label = open ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
+      toggle.setAttribute("aria-label", label ?? "");
+    }
+
+    toggle.addEventListener("click", () => setOpen(!navigation.hasAttribute("data-open")));
+
+    // Choosing a link closes the menu.
+    navigation.addEventListener("click", (event) => {
+      if (event.target instanceof HTMLAnchorElement) setOpen(false);
+    });
+
+    // Escape closes the menu and returns focus to the button.
+    navigation.parentElement?.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && navigation.hasAttribute("data-open")) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+
+  // Marks the link of the section on screen and points the language links at that section.
+  function setActiveSection(sectionId: string) {
+    const links = document.querySelectorAll<HTMLAnchorElement>("[data-section-link]");
+    let hasLink = false;
+
+    links.forEach((link) => {
+      const isActive = link.dataset.sectionLink === sectionId;
+      hasLink ||= isActive;
+      if (isActive) {
+        link.setAttribute("aria-current", "location");
+      } else if (link.dataset.sectionLink) {
+        link.removeAttribute("aria-current");
+      }
+    });
+
+    document.querySelectorAll<HTMLAnchorElement>("[data-language-link]").forEach((link) => {
+      link.hash = hasLink ? sectionId : "";
+    });
+  }
+
+  // Watches a thin band across the middle of the screen. The section touching it is active.
+  function initActiveSection() {
+    sectionObserver?.disconnect();
+
+    sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries
+          .filter((entry) => entry.isIntersecting)
+          .forEach((entry) => setActiveSection(entry.target.id));
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+
+    document
+      .querySelectorAll("main section[id]")
+      .forEach((section) => sectionObserver?.observe(section));
+  }
+
+  // Runs on the first load and after every View Transition.
+  document.addEventListener("astro:page-load", () => {
+    initMenu();
+    initActiveSection();
+  });
+</script>
