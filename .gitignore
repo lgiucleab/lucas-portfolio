@@ -1,0 +1,26 @@
+# Files Git must never track. One rule per line; "#" starts a comment.
+
+# Installed packages: recreated at any time with "npm install".
+node_modules/
+
+# Build output: recreated with "npm run build".
+dist/
+.astro/
+.vercel/
+
+# Secrets. Only .env.example (which holds no real values) is committed.
+.env
+.env.*
+!.env.example
+
+# Private personal data: the resume contains Lucas's phone number.
+docs/resume.pdf
+
+# Screenshots of someone else's Behance design: reference only, not ours to publish.
+design-reference/
+
+# Logs and editor/OS clutter.
+*.log
+.DS_Store
+Thumbs.db
+.idea/

@@ -1,0 +1,2 @@
+# Normalises line endings so Windows and Linux (Vercel, GitHub Actions) store text files the same way.
+* text=auto eol=lf
