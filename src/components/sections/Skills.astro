@@ -1,0 +1,41 @@
+---
+// Skills grouped into cards. The data lives in src/config/skills.ts
+import Card from "@/components/ui/Card.astro";
+import Section from "@/components/ui/Section.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import Tag from "@/components/ui/Tag.astro";
+import { skillGroups } from "@/config/skills";
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<Section id="skills" class="space-y-12">
+  <SectionLabel>{t("skills.title")}</SectionLabel>
+
+  <div class="grid gap-4 md:grid-cols-2">
+    {skillGroups.map((group, index) => (
+      // The first group is the largest, so it spans the full width.
+      <Card class:list={["reveal space-y-4", index === 0 && "md:col-span-2"]}>
+        <h3 class="text-lg font-medium">{t(group.title)}</h3>
+        <ul class="flex flex-wrap gap-2">
+          {group.skills.map((skill) => (
+            <li>
+              <Tag icon={skill.icon}>
+                {skill.name}
+                {skill.note && ` (${t(skill.note)})`}
+              </Tag>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    ))}
+  </div>
+</Section>
