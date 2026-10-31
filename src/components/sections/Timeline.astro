@@ -1,0 +1,76 @@
+---
+// Vertical timeline that merges the experience and education collections, newest first.
+import { Icon } from "astro-icon/components";
+import { render } from "astro:content";
+
+import Section from "@/components/ui/Section.astro";
+import SectionLabel from "@/components/ui/SectionLabel.astro";
+import Tag from "@/components/ui/Tag.astro";
+import type { Locale } from "@/i18n/config";
+import { useTranslations } from "@/i18n";
+import { getLocalizedEntries } from "@/lib/content";
+import { formatDateRange } from "@/lib/dates";
+
+interface Props {
+  // The language of the current page.
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const experience = await getLocalizedEntries("experience", locale);
+const education = await getLocalizedEntries("education", locale);
+
+// Join both lists, then sort by start date with the most recent at the top.
+const entries = [...experience, ...education].sort(
+  (a, b) => b.data.startDate.getTime() - a.data.startDate.getTime(),
+);
+
+// render() prepares each entry's description text for display.
+const rendered = await Promise.all(entries.map((entry) => render(entry)));
+---
+
+<Section id="experience" class="space-y-12">
+  <SectionLabel>{t("timeline.title")}</SectionLabel>
+
+  <ol class="border-line space-y-12 border-l">
+    {entries.map((entry, index) => {
+      const Description = rendered[index]?.Content;
+      const { title, place, location, startDate, endDate, link } = entry.data;
+      return (
+        <li class="reveal relative pl-8">
+          {/* The dot sits on top of the vertical line. */}
+          <span
+            aria-hidden="true"
+            class="bg-ink absolute top-2 -left-[5px] size-2.5 rounded-full"
+          />
+          <Tag>{t(entry.collection === "education" ? "timeline.education" : "timeline.work")}</Tag>
+          <h3 class="mt-3 text-xl font-medium">{title}</h3>
+          <h4 class="mt-1 font-sans text-base font-normal">
+            {location ? `${place}, ${location}` : place}
+          </h4>
+          <p class="mt-1 text-sm">
+            <time datetime={startDate.toISOString().slice(0, 7)}>
+              {formatDateRange(startDate, endDate, locale, t("timeline.present"))}
+            </time>
+          </p>
+          <div class="max-w-text mt-3">{Description && <Description />}</div>
+          {link && (
+            <a
+              href={link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-ink mt-3 inline-flex items-center gap-1 text-sm italic underline-offset-4 hover:underline"
+            >
+              {t("timeline.learnMore")}
+              {/* Tells screen reader users where each "Learn more" leads. */}
+              <span class="sr-only">: {place}</span>
+              <Icon name="lucide:arrow-up-right" class="size-4" aria-hidden="true" />
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</Section>
