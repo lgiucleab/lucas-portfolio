@@ -1,0 +1,9 @@
+# Files Prettier must not reformat: generated output and the npm lockfile.
+dist/
+.astro/
+.vercel/
+node_modules/
+package-lock.json
+design-reference/
+docs/
+CLAUDE.md
