@@ -31,6 +31,10 @@ The site then runs at <http://localhost:4321>.
 | `npm run format`       | Formats all files with Prettier              |
 | `npm run format:check` | Reports unformatted files without changing   |
 
+## Add your photos
+
+Drop `avatar.jpg` (hero) and `about.jpg` (About section) into `src/assets/photos/`. The `.png`, `.webp` and `.avif` formats also work. The site resizes them and replaces the "LG" placeholders automatically.
+
 ## Add a project
 
 Each file in `src/content/projects/` is one project card, so no code changes are needed.
