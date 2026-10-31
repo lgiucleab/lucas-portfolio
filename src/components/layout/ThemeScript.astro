@@ -1,0 +1,40 @@
+---
+// Sets the theme before the page is drawn, which prevents a flash of the wrong
+// theme. Place it inside <head>. It takes no props.
+---
+
+<!-- is:inline keeps this script in the HTML, so it runs before the first paint.
+     Astro's normal scripts load later, which would cause the flash. -->
+<script is:inline>
+  (function () {
+    // Name of the localStorage entry holding "light", "dark" or nothing (System).
+    const STORAGE_KEY = "theme";
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function applyTheme() {
+      let saved = null;
+      // Reading storage throws in some private browsing modes, so failure means System.
+      try {
+        saved = localStorage.getItem(STORAGE_KEY);
+      } catch {
+        saved = null;
+      }
+
+      const preference = saved === "light" || saved === "dark" ? saved : "system";
+      const systemTheme = systemPrefersDark.matches ? "dark" : "light";
+      const root = document.documentElement;
+
+      // data-theme is the theme shown; data-theme-preference is the visitor's choice.
+      root.dataset.theme = preference === "system" ? systemTheme : preference;
+      root.dataset.themePreference = preference;
+    }
+
+    applyTheme();
+    window.applyTheme = applyTheme;
+
+    // Follow the OS setting live while the visitor is on System.
+    systemPrefersDark.addEventListener("change", applyTheme);
+    // View Transitions replace <html> attributes, so restore the theme after each one.
+    document.addEventListener("astro:after-swap", applyTheme);
+  })();
+</script>

@@ -1,0 +1,71 @@
+---
+// Light / Dark / System theme picker. Requires ThemeScript in the page <head>.
+// Built from real radio inputs, so arrow keys and screen readers work for free.
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  // Visible only to screen readers. Phase 3 passes these from the translations.
+  legend?: string;
+  labels?: { light: string; dark: string; system: string };
+}
+
+const { legend = "Choose a theme", labels = { light: "Light", dark: "Dark", system: "System" } } =
+  Astro.props;
+
+// One entry per button. To reorder the buttons, reorder this list.
+const options = [
+  { value: "light", label: labels.light, icon: "lucide:sun" },
+  { value: "dark", label: labels.dark, icon: "lucide:moon" },
+  { value: "system", label: labels.system, icon: "lucide:monitor" },
+];
+---
+
+<fieldset data-theme-switcher class="border-line inline-flex rounded-full border p-1">
+  <legend class="sr-only">{legend}</legend>
+  {options.map((option) => (
+    <label
+      title={option.label}
+      class="text-muted hover:text-ink has-checked:bg-accent has-checked:text-on-accent has-focus-visible:outline-ink flex size-8 cursor-pointer items-center justify-center rounded-full transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2"
+    >
+      {/* sr-only hides the radio dot but keeps it usable by keyboard. */}
+      <input type="radio" name="theme" value={option.value} class="sr-only" />
+      <span class="sr-only">{option.label}</span>
+      <Icon name={option.icon} class="size-4" aria-hidden="true" />
+    </label>
+  ))}
+</fieldset>
+
+<script>
+  // Connects the radio buttons to the saved theme.
+  function initThemeSwitchers() {
+    const switchers = document.querySelectorAll<HTMLFieldSetElement>("[data-theme-switcher]");
+
+    switchers.forEach((switcher) => {
+      const inputs = switcher.querySelectorAll<HTMLInputElement>('input[name="theme"]');
+      const preference = document.documentElement.dataset.themePreference ?? "system";
+
+      inputs.forEach((input) => {
+        // Mark the button matching the saved choice.
+        input.checked = input.value === preference;
+
+        input.addEventListener("change", () => {
+          // Storage can be blocked. The choice then lasts only for this page.
+          try {
+            if (input.value === "system") {
+              localStorage.removeItem("theme");
+            } else {
+              localStorage.setItem("theme", input.value);
+            }
+            window.applyTheme();
+          } catch {
+            document.documentElement.dataset.theme = input.value === "light" ? "light" : "dark";
+          }
+        });
+      });
+    });
+  }
+
+  initThemeSwitchers();
+  // Run again after each View Transition, because the buttons are replaced.
+  document.addEventListener("astro:after-swap", initThemeSwitchers);
+</script>
