@@ -72,7 +72,8 @@ test("language switcher keeps the current section", async ({ page }) => {
     "location",
   );
   await expect(page.locator('a[data-language-link="es"]')).toHaveAttribute("href", /#projects$/);
-  await page.locator('a[data-language-link="es"]').click();
+  // A direct click, because Playwright's click can scroll first, and that changes the section.
+  await page.locator('a[data-language-link="es"]').evaluate((link: HTMLElement) => link.click());
   await expect(page).toHaveURL(/\/es\/#projects$/);
   await expect(page.locator("html")).toHaveAttribute("lang", "es");
 });
