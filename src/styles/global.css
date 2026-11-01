@@ -76,6 +76,7 @@
   --spacing-gutter: clamp(1rem, 4vw, 2.5rem); /* Page side margin: px-gutter */
   --container-page: 72rem; /* Maximum content width: max-w-page */
   --container-text: 40rem; /* Comfortable reading width: max-w-text */
+  --container-post: 46rem; /* Blog posts, slightly wider for code: max-w-post */
 
   /* Corner radius. Pills use Tailwind's rounded-full. */
   --radius-card: 2rem; /* Cards: rounded-card */
@@ -126,7 +127,70 @@
   }
 }
 
-/* 5. SCROLL REVEAL ------------------------------------------------------------
+/* 5. BLOG POST TEXT ----------------------------------------------------------
+ * Styles for Markdown output, which cannot carry Tailwind classes.
+ * Wrap post content in an element with class="post-content".
+ */
+
+.post-content {
+  @apply space-y-5 text-lg leading-relaxed;
+
+  & h2 {
+    @apply pt-6 text-2xl font-semibold;
+  }
+
+  & h3 {
+    @apply pt-4 text-xl font-medium;
+  }
+
+  & a {
+    @apply text-ink underline underline-offset-4;
+  }
+
+  & ul {
+    @apply list-disc space-y-2 pl-6;
+  }
+
+  & ol {
+    @apply list-decimal space-y-2 pl-6;
+  }
+
+  & blockquote {
+    @apply border-l-2 border-line pl-5 italic;
+  }
+
+  /* Inline code, such as `npm install`. */
+  & :not(pre) > code {
+    @apply rounded-md border border-line bg-surface px-1.5 py-0.5 font-display text-sm text-ink;
+  }
+
+  /* Code blocks. Long lines scroll inside the block, not the whole page. */
+  & pre {
+    @apply overflow-x-auto rounded-card border border-line p-5 text-sm;
+  }
+
+  & pre code {
+    @apply font-display;
+  }
+}
+
+/* Code colors: Shiki gives each word both themes as variables, and this picks one. */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+}
+
+[data-theme="dark"] .astro-code,
+[data-theme="dark"] .astro-code span {
+  color: var(--shiki-dark);
+}
+
+/* A shared background keeps code blocks matching the cards in both themes. */
+.astro-code {
+  background-color: var(--theme-surface);
+}
+
+/* 6. SCROLL REVEAL ------------------------------------------------------------
  * Add class="reveal" to fade an element in as it scrolls into view.
  * This is pure CSS, so with no support or reduced motion the element simply stays visible.
  */
@@ -148,7 +212,7 @@
   }
 }
 
-/* 6. ACCESSIBILITY ----------------------------------------------------------- */
+/* 7. ACCESSIBILITY ----------------------------------------------------------- */
 
 /* Visitors who ask their system for less motion get no animations at all. */
 @media (prefers-reduced-motion: reduce) {

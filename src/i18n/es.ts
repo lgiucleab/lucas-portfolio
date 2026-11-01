@@ -75,7 +75,16 @@ export const es: Record<TranslationKey, string> = {
   "photo.avatar": "Retrato de Lucas",
   "photo.about": "Lucas Giuclea Balan",
 
-  // Temporary text, replaced in Phases 7 and 8.
+  // Blog.
+  "blog.empty": "Los artículos llegarán pronto.",
+  "blog.readMore": "Leer más",
+  "blog.minutes": "min de lectura",
+  "blog.back": "Volver al blog",
+  "blog.relatedProject": "Proyecto relacionado",
+  "blog.rss": "Feed RSS",
+  "blog.copy": "Copiar",
+  "blog.copied": "Copiado",
+
+  // Temporary text, replaced in Phase 8.
   "placeholder.contact": "El formulario de contacto llega en la Fase 8.",
-  "placeholder.blog": "Los artículos llegarán pronto.",
 };

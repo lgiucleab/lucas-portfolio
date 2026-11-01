@@ -75,9 +75,18 @@ export const en = {
   "photo.avatar": "Portrait of Lucas",
   "photo.about": "Lucas Giuclea Balan",
 
-  // Temporary text, replaced in Phases 7 and 8.
+  // Blog.
+  "blog.empty": "Articles are coming soon.",
+  "blog.readMore": "Read more",
+  "blog.minutes": "min read",
+  "blog.back": "Back to the blog",
+  "blog.relatedProject": "Related project",
+  "blog.rss": "RSS feed",
+  "blog.copy": "Copy",
+  "blog.copied": "Copied",
+
+  // Temporary text, replaced in Phase 8.
   "placeholder.contact": "The contact form arrives in Phase 8.",
-  "placeholder.blog": "Articles are coming soon.",
 } as const;
 
 // The list of valid keys, used to type-check every t() call.

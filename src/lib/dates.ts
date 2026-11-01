@@ -14,6 +14,14 @@ export function formatMonth(date: Date, locale: Locale): string {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
+// Turns a date into "1 November 2026" or "1 de noviembre de 2026", for blog posts.
+export function formatFullDate(date: Date, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : locale, {
+    dateStyle: "long",
+    timeZone: "UTC",
+  }).format(date);
+}
+
 // Builds a range such as "September 2021 - May 2026". With no end date it ends in presentLabel.
 export function formatDateRange(
   start: Date,
