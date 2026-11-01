@@ -39,6 +39,13 @@ const absoluteUrl = (code: Locale) => new URL(localizedPath(code, path), Astro.s
       <link rel="alternate" hreflang={code} href={absoluteUrl(code)} />
     ))}
     <link rel="alternate" hreflang="x-default" href={absoluteUrl(defaultLocale)} />
+    <!-- Lets feed readers find this language's blog feed. -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={t("meta.blogTitle")}
+      href={`${localizedPath(locale)}rss.xml`}
+    />
     <ThemeScript />
     <!-- Turns page changes into smooth View Transitions. -->
     <ClientRouter />
