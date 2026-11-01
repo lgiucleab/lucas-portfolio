@@ -1,4 +1,5 @@
 // Main Astro configuration: site URL, build behaviour and integrations.
+import mdx from "@astrojs/mdx";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
@@ -29,7 +30,18 @@ export default defineConfig({
   adapter: vercel(),
 
   // astro-icon inlines SVG icons at build time, so they add no JavaScript to the browser.
-  integrations: [icon()],
+  // MDX lets blog posts use Markdown plus components.
+  integrations: [mdx(), icon()],
+
+  // Syntax highlighting for code blocks, done at build time by Shiki.
+  markdown: {
+    shikiConfig: {
+      // One theme per site theme. These "default" versions have readable comments in both.
+      themes: { light: "github-light-default", dark: "github-dark-default" },
+      // Outputs both as CSS variables, and global.css picks one using data-theme.
+      defaultColor: false,
+    },
+  },
 
   // Tailwind 4 runs as a Vite plugin, the officially recommended setup for Astro.
   vite: {
