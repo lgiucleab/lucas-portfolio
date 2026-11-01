@@ -70,6 +70,26 @@ Each file in `src/content/projects/` is one project card, so no code changes are
 
 If you leave the description empty, the card shows the GitHub description, which is not translated. To remove a project from the site, delete both files. A private repository also has to be allowed in the `GITHUB_TOKEN` settings on GitHub.
 
+## Write a blog post
+
+Each post is two MDX files, one per language, with the same file name. The file name becomes the address, so `my-post.mdx` is published at `/en/blog/my-post/` and `/es/blog/my-post/`.
+
+```mdx
+---
+title: My post
+description: One sentence for the post list, search results and RSS.
+date: 2026-11-01
+tags: ["Astro", "TypeScript"]
+cover: ../../../assets/blog/my-post.png
+project: openskyatc
+draft: true
+---
+
+Write the post here in Markdown.
+```
+
+Only `title`, `description` and `date` are required. `project` is a file name from `src/content/projects/`. With `draft: true` the post shows in `npm run dev` but is not published, so remove the line in both languages when it is ready. The reading time is calculated automatically.
+
 ## GitHub data
 
 Stars, last update dates and the "More on GitHub" list are fetched from the GitHub API during each build. If the API fails, the build uses `src/data/github-fallback.json` and logs a warning. After adding a featured project, refresh that file:
