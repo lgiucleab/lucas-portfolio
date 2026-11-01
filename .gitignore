@@ -8,6 +8,10 @@ dist/
 .astro/
 .vercel/
 
+# Test output: recreated with "npm test".
+test-results/
+playwright-report/
+
 # Secrets. Only .env.example (which holds no real values) is committed.
 .env
 .env.*

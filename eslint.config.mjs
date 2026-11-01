@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 
 export default [
   // Generated folders are never linted.
-  { ignores: ["dist/", ".astro/", ".vercel/", "node_modules/"] },
+  { ignores: ["dist/", ".astro/", ".vercel/", "node_modules/", "test-results/"] },
 
   // Recommended TypeScript rules.
   ...tseslint.configs.recommended,

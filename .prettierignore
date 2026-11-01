@@ -3,6 +3,8 @@ dist/
 .astro/
 .vercel/
 node_modules/
+test-results/
+playwright-report/
 package-lock.json
 design-reference/
 docs/
