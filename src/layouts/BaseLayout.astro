@@ -2,6 +2,9 @@
 // Page frame used by every public page: <head>, header, main content area and footer.
 // The page content goes between the tags.
 import "@/styles/global.css";
+import firaCodeFont from "@fontsource-variable/fira-code/files/fira-code-latin-wght-normal.woff2?url";
+import openSansItalicFont from "@fontsource-variable/open-sans/files/open-sans-latin-wght-italic.woff2?url";
+import openSansFont from "@fontsource-variable/open-sans/files/open-sans-latin-wght-normal.woff2?url";
 import Analytics from "@vercel/analytics/astro";
 import { ClientRouter } from "astro:transitions";
 
@@ -35,6 +38,10 @@ const t = useTranslations(locale);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <SEO locale={locale} title={title} description={description} image={image} type={type} />
+    <!-- Fetches the fonts early, so late fonts do not rewrap text and shift the page. -->
+    {[firaCodeFont, openSansFont, openSansItalicFont].map((font) => (
+      <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+    ))}
     <!-- Browser tab icons, phone home screen icon and bar color. -->
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
