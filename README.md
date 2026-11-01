@@ -36,6 +36,10 @@ The site then runs at <http://localhost:4321>.
 
 Drop `avatar.jpg` (hero) and `about.jpg` (About section) into `src/assets/photos/`. The `.png`, `.webp` and `.avif` formats also work. The site resizes them and replaces the "LG" placeholders automatically.
 
+## Add your CV
+
+Add `cv-en.pdf` and `cv-es.pdf` to `public/cv/`. The "Download CV" button appears by itself for each language that has a file. These files are public, so leave out your phone number and address.
+
 ## Add a project
 
 Each file in `src/content/projects/` is one project card, so no code changes are needed.
@@ -105,6 +109,14 @@ The workflow in `.github/workflows/daily-rebuild.yml` starts a new deployment ev
 The form sends through the `contact` Astro Action in `src/actions/index.ts`, the only code that runs on a server. Resend delivers the email, Upstash Redis limits each visitor to 5 messages per hour, and a hidden honeypot field catches bots. The validation rules are in `src/lib/contact-schema.ts` and are shared by the browser and the server.
 
 Without `RESEND_API_KEY` and `CONTACT_TO_EMAIL` the form shows its error message. Without the Upstash variables it still sends, but with no rate limit.
+
+## SEO and icons
+
+`src/components/seo/SEO.astro` holds the search and social tags. Preview images are drawn at build time from `src/lib/og-image.ts`, one per language for the home page and one per blog post. To change the favicon, edit the values in `scripts/generate-favicons.mjs` and run:
+
+```bash
+npm run icons
+```
 
 ## Environment variables
 
