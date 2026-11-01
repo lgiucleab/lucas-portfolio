@@ -21,15 +21,16 @@ The site then runs at <http://localhost:4321>.
 
 ## Commands
 
-| Command                | What it does                                 |
-| ---------------------- | -------------------------------------------- |
-| `npm run dev`          | Starts the local development server          |
-| `npm run build`        | Type checks, then builds the production site |
-| `npm run preview`      | Serves the built site locally                |
-| `npm run check`        | Type checks with `astro check`               |
-| `npm run lint`         | Finds code problems with ESLint              |
-| `npm run format`       | Formats all files with Prettier              |
-| `npm run format:check` | Reports unformatted files without changing   |
+| Command                   | What it does                                 |
+| ------------------------- | -------------------------------------------- |
+| `npm run dev`             | Starts the local development server          |
+| `npm run build`           | Type checks, then builds the production site |
+| `npm run preview`         | Serves the built site locally                |
+| `npm run check`           | Type checks with `astro check`               |
+| `npm run lint`            | Finds code problems with ESLint              |
+| `npm run format`          | Formats all files with Prettier              |
+| `npm run format:check`    | Reports unformatted files without changing   |
+| `npm run github:fallback` | Saves GitHub data for use if the API fails   |
 
 ## Add your photos
 
@@ -61,13 +62,23 @@ Each file in `src/content/projects/` is one project card, so no code changes are
 | --------- | -------- | ------------------------------------------------------ |
 | `title`   | Yes      | Name on the card                                       |
 | `repo`    | Yes      | Exact GitHub repository name                           |
-| `tags`    | Yes      | Technologies shown on the card                         |
+| `tags`    | No       | Technologies on the card. Defaults to GitHub's data    |
 | `private` | No       | `true` shows a "Private" tag and hides the Code button |
 | `image`   | No       | Card image, added to `src/assets/projects/`            |
-| `preview` | No       | Live demo address for the Preview button               |
+| `preview` | No       | Preview address. Defaults to the repository's homepage |
 | `order`   | No       | Position on the page, where lower numbers come first   |
 
-To remove a project from the site, delete both files. A private repository also has to be allowed in the `GITHUB_TOKEN` settings on GitHub.
+If you leave the description empty, the card shows the GitHub description, which is not translated. To remove a project from the site, delete both files. A private repository also has to be allowed in the `GITHUB_TOKEN` settings on GitHub.
+
+## GitHub data
+
+Stars, last update dates and the "More on GitHub" list are fetched from the GitHub API during each build. If the API fails, the build uses `src/data/github-fallback.json` and logs a warning. After adding a featured project, refresh that file:
+
+```bash
+npm run github:fallback
+```
+
+The workflow in `.github/workflows/daily-rebuild.yml` starts a new deployment every day to keep the data fresh.
 
 ## Environment variables
 
