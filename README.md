@@ -100,6 +100,12 @@ npm run github:fallback
 
 The workflow in `.github/workflows/daily-rebuild.yml` starts a new deployment every day to keep the data fresh.
 
+## Contact form
+
+The form sends through the `contact` Astro Action in `src/actions/index.ts`, the only code that runs on a server. Resend delivers the email, Upstash Redis limits each visitor to 5 messages per hour, and a hidden honeypot field catches bots. The validation rules are in `src/lib/contact-schema.ts` and are shared by the browser and the server.
+
+Without `RESEND_API_KEY` and `CONTACT_TO_EMAIL` the form shows its error message. Without the Upstash variables it still sends, but with no rate limit.
+
 ## Environment variables
 
 Copy `.env.example` to `.env` and fill in the values. Each variable is explained in that file. Never commit `.env`.
