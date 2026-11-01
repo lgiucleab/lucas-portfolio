@@ -1,0 +1,43 @@
+# Checks every push and pull request, so a broken change is caught before it goes live.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# This workflow only reads the code.
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      # There is no GitHub token here, so private projects use the saved fallback data.
+      - name: Type check and build
+        run: npm run build
+
+      - name: Install the test browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run the smoke tests
+        run: npm test
