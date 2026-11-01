@@ -60,8 +60,13 @@ test("theme choice survives a reload", async ({ page }) => {
 });
 
 test("language switcher keeps the current section", async ({ page }) => {
-  await page.goto("/en/#projects");
-  // Waits for the smooth scroll to reach the section, which updates the language links.
+  await page.goto("/en/");
+  // Late fonts move the sections, so the page must settle before the jump to Projects.
+  await page.waitForLoadState("networkidle");
+  await page.evaluate(() => document.fonts.ready);
+  await page.locator("#projects").evaluate((section) => {
+    section.scrollIntoView({ behavior: "instant" });
+  });
   await expect(page.locator('[data-section-link="projects"]')).toHaveAttribute(
     "aria-current",
     "location",
