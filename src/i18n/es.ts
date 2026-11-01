@@ -59,6 +59,7 @@ export const es: Record<TranslationKey, string> = {
   // Skills section.
   "skills.title": "Habilidades",
   "skills.languages": "Lenguajes",
+  "skills.frontend": "Frontend",
   "skills.ai": "IA",
   "skills.tools": "Herramientas",
   "skills.aBit": "un poco",

@@ -59,6 +59,7 @@ export const en = {
   // Skills section.
   "skills.title": "Skills",
   "skills.languages": "Languages",
+  "skills.frontend": "Frontend",
   "skills.ai": "AI",
   "skills.tools": "Tools",
   "skills.aBit": "a bit",

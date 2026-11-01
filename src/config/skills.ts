@@ -20,27 +20,34 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       { name: "Python", icon: "simple-icons:python" },
       { name: "JavaScript", icon: "simple-icons:javascript" },
-      { name: "HTML", icon: "simple-icons:html5" },
-      { name: "CSS", icon: "simple-icons:css" },
-      { name: "React", icon: "simple-icons:react" },
-      { name: "Tailwind", icon: "simple-icons:tailwindcss" },
       { name: "C", icon: "simple-icons:c" },
       { name: "Swift", icon: "simple-icons:swift", note: "skills.aBit" },
     ],
   },
   {
+    title: "skills.frontend",
+    skills: [
+      { name: "HTML", icon: "simple-icons:html5" },
+      { name: "CSS", icon: "simple-icons:css" },
+      { name: "React", icon: "simple-icons:react" },
+      { name: "Tailwind", icon: "simple-icons:tailwindcss" },
+    ],
+  },
+  {
     title: "skills.ai",
-    skills: [{ name: "Claude", icon: "simple-icons:claude" }],
+    skills: [
+      { name: "Claude", icon: "simple-icons:claude" },
+      { name: "Claude Code", icon: "simple-icons:claude" },
+    ],
   },
   {
     title: "skills.tools",
     skills: [
-      { name: "IDEs", icon: "lucide:code-xml" },
-      { name: "Microsoft Office", icon: "simple-icons:microsoftoffice" },
-      { name: "Claude Code", icon: "simple-icons:claude" },
-      { name: "Figma", icon: "simple-icons:figma" },
       { name: "Git", icon: "simple-icons:git" },
       { name: "Vercel", icon: "simple-icons:vercel" },
+      { name: "Figma", icon: "simple-icons:figma" },
+      { name: "IDEs", icon: "lucide:code-xml" },
+      { name: "Microsoft Office", icon: "simple-icons:microsoftoffice" },
     ],
   },
 ];

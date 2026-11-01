@@ -21,9 +21,8 @@ const t = useTranslations(locale);
   <SectionLabel>{t("skills.title")}</SectionLabel>
 
   <div class="grid gap-4 md:grid-cols-2">
-    {skillGroups.map((group, index) => (
-      // The first group is the largest, so it spans the full width.
-      <Card class:list={["reveal space-y-4", index === 0 && "md:col-span-2"]}>
+    {skillGroups.map((group) => (
+      <Card class="reveal space-y-4">
         <h3 class="text-lg font-medium">{t(group.title)}</h3>
         <ul class="flex flex-wrap gap-2">
           {group.skills.map((skill) => (
