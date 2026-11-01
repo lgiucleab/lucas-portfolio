@@ -1,0 +1,145 @@
+---
+// Blog post page, built once per post and language.
+import type { GetStaticPaths } from "astro";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import { getEntry, render, type CollectionEntry } from "astro:content";
+
+import Tag from "@/components/ui/Tag.astro";
+import { locales, type Locale } from "@/i18n/config";
+import { localizedPath, useTranslations } from "@/i18n";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getPostSlug, getPublishedPosts, getReadingMinutes } from "@/lib/content";
+import { formatFullDate } from "@/lib/dates";
+
+export const getStaticPaths = (async () => {
+  const paths = await Promise.all(
+    locales.map(async (lang) => {
+      const posts = await getPublishedPosts(lang);
+      return posts.map((post) => ({
+        params: { lang, slug: getPostSlug(post) },
+        props: { post },
+      }));
+    }),
+  );
+  return paths.flat();
+}) satisfies GetStaticPaths;
+
+interface Props {
+  // The post to show, passed from getStaticPaths.
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props;
+// getStaticPaths only creates pages for valid languages, so this cast is safe.
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const { title, description, date, tags, cover, project } = post.data;
+const { Content } = await render(post);
+
+// The related project's name, read from its content file.
+const relatedProject = project ? await getEntry("projects", `${locale}/${project}`) : undefined;
+---
+
+<BaseLayout locale={locale} title={`${title} | Lucas Giuclea Balan`} description={description}>
+  <article
+    data-post
+    data-copy-label={t("blog.copy")}
+    data-copied-label={t("blog.copied")}
+    class="max-w-post px-gutter py-section mx-auto space-y-8"
+  >
+    <a
+      href={localizedPath(locale, "blog")}
+      class="text-ink inline-flex items-center gap-2 text-sm italic underline-offset-4 hover:underline"
+    >
+      <Icon name="lucide:arrow-left" class="size-4" aria-hidden="true" />
+      {t("blog.back")}
+    </a>
+
+    <header class="space-y-4">
+      <h1 class="text-title leading-tight font-semibold">{title}</h1>
+      <p class="text-sm">
+        <time datetime={date.toISOString().slice(0, 10)}>{formatFullDate(date, locale)}</time>
+        {` · ${getReadingMinutes(post)} ${t("blog.minutes")}`}
+      </p>
+      {tags.length > 0 && (
+        <ul class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li>
+              <Tag>{tag}</Tag>
+            </li>
+          ))}
+        </ul>
+      )}
+      {relatedProject && (
+        <p class="text-sm">
+          {t("blog.relatedProject")}:{" "}
+          <a
+            href={localizedPath(locale, "", "projects")}
+            class="text-ink underline underline-offset-4"
+          >
+            {relatedProject.data.title}
+          </a>
+        </p>
+      )}
+    </header>
+
+    {cover && (
+      <Image
+        src={cover}
+        alt=""
+        width={920}
+        class="rounded-panel aspect-[16/9] w-full object-cover"
+      />
+    )}
+
+    <div class="post-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  // How long the "Copied" confirmation stays on the button.
+  const CONFIRMATION_MS = 2000;
+
+  // Adds a copy button to every code block in the post.
+  function addCopyButtons() {
+    const post = document.querySelector<HTMLElement>("[data-post]");
+    if (!post) return;
+
+    const copyLabel = post.dataset.copyLabel ?? "";
+    const copiedLabel = post.dataset.copiedLabel ?? "";
+
+    post.querySelectorAll("pre").forEach((codeBlock) => {
+      // The wrapper keeps the button fixed while the code scrolls sideways.
+      const wrapper = document.createElement("div");
+      wrapper.className = "relative";
+      codeBlock.replaceWith(wrapper);
+      wrapper.append(codeBlock);
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = copyLabel;
+      button.className =
+        "bg-accent text-on-accent absolute top-3 right-3 rounded-full px-3 py-1 text-xs italic";
+
+      button.addEventListener("click", async () => {
+        // The browser can refuse clipboard access. The code then stays selectable by hand.
+        try {
+          await navigator.clipboard.writeText(codeBlock.innerText);
+        } catch {
+          return;
+        }
+        button.textContent = copiedLabel;
+        setTimeout(() => (button.textContent = copyLabel), CONFIRMATION_MS);
+      });
+
+      wrapper.append(button);
+    });
+  }
+
+  // Runs on the first load and after every View Transition.
+  document.addEventListener("astro:page-load", addCopyButtons);
+</script>

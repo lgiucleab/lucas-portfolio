@@ -1,21 +1,73 @@
 ---
-// Temporary blog page, so the navbar link and language switcher work. Phase 7 replaces it.
+// Blog list page, built once per language. Posts come from src/content/blog/<language>/
 import type { GetStaticPaths } from "astro";
 
+import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
+import Button from "@/components/ui/Button.astro";
+import Card from "@/components/ui/Card.astro";
+import Tag from "@/components/ui/Tag.astro";
 import type { Locale } from "@/i18n/config";
-import { getLocaleStaticPaths, useTranslations } from "@/i18n";
+import { getLocaleStaticPaths, localizedPath, useTranslations } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { getPostSlug, getPublishedPosts, getReadingMinutes } from "@/lib/content";
+import { formatFullDate } from "@/lib/dates";
 
 export const getStaticPaths = (() => getLocaleStaticPaths()) satisfies GetStaticPaths;
 
 // getStaticPaths only creates pages for valid languages, so this cast is safe.
 const locale = Astro.params.lang as Locale;
 const t = useTranslations(locale);
+const posts = await getPublishedPosts(locale);
 ---
 
 <BaseLayout locale={locale} title={t("meta.blogTitle")} description={t("meta.blogDescription")}>
-  <section class="max-w-page px-gutter py-section mx-auto">
-    <h1 class="text-title leading-none font-semibold">{t("nav.blog")}</h1>
-    <p class="mt-6">{t("placeholder.blog")}</p>
-  </section>
+  <div class="relative overflow-hidden">
+    <BackgroundCircle class="-right-32 -bottom-48 size-[30rem]" />
+
+    <section class="max-w-page px-gutter py-section relative mx-auto space-y-12">
+      <!-- Large right-aligned title, like "Articles" in the design. -->
+      <h1 class="text-title border-line border-b pb-6 text-right leading-none font-semibold">
+        {t("nav.blog")}
+      </h1>
+
+      {posts.length === 0 ? (
+        <p>{t("blog.empty")}</p>
+      ) : (
+        <div class="grid gap-4 md:grid-cols-2">
+          {posts.map((post) => (
+            <Card as="article" interactive class="reveal flex flex-col gap-4">
+              <p class="text-sm">
+                <time datetime={post.data.date.toISOString().slice(0, 10)}>
+                  {formatFullDate(post.data.date, locale)}
+                </time>
+                {` · ${getReadingMinutes(post)} ${t("blog.minutes")}`}
+              </p>
+              <h2 class="text-xl font-medium">{post.data.title}</h2>
+              <p>{post.data.description}</p>
+              {post.data.tags.length > 0 && (
+                <ul class="flex flex-wrap gap-2">
+                  {post.data.tags.map((tag) => (
+                    <li>
+                      <Tag>{tag}</Tag>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {/* mt-auto keeps the buttons level across cards of different heights. */}
+              <div class="mt-auto pt-2">
+                <Button href={localizedPath(locale, `blog/${getPostSlug(post)}`)} arrow>
+                  {t("blog.readMore")}
+                  <span class="sr-only">: {post.data.title}</span>
+                </Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      <Button variant="outline" href={`${localizedPath(locale)}rss.xml`} icon="lucide:rss">
+        {t("blog.rss")}
+      </Button>
+    </section>
+  </div>
 </BaseLayout>
