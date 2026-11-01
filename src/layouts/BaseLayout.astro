@@ -2,13 +2,15 @@
 // Page frame used by every public page: <head>, header, main content area and footer.
 // The page content goes between the tags.
 import "@/styles/global.css";
+import Analytics from "@vercel/analytics/astro";
 import { ClientRouter } from "astro:transitions";
 
 import Footer from "@/components/layout/Footer.astro";
 import Header from "@/components/layout/Header.astro";
 import ThemeScript from "@/components/layout/ThemeScript.astro";
-import { defaultLocale, locales, type Locale } from "@/i18n/config";
-import { localizedPath, pathWithoutLocale, useTranslations } from "@/i18n";
+import SEO from "@/components/seo/SEO.astro";
+import type { Locale } from "@/i18n/config";
+import { localizedPath, useTranslations } from "@/i18n";
 
 interface Props {
   // The language of this page.
@@ -17,14 +19,14 @@ interface Props {
   title: string;
   // Translated search result description.
   description: string;
+  // Social preview image. Pages without their own use the home page image.
+  image?: string;
+  // "article" for blog posts.
+  type?: "website" | "article";
 }
 
-const { locale, title, description } = Astro.props;
+const { locale, title, description, image = `/og/${locale}/home.png`, type } = Astro.props;
 const t = useTranslations(locale);
-
-// The same page in each language, for search engines. Phase 9 moves this into <SEO>.
-const path = pathWithoutLocale(Astro.url.pathname);
-const absoluteUrl = (code: Locale) => new URL(localizedPath(code, path), Astro.site).href;
 ---
 
 <!doctype html>
@@ -32,13 +34,13 @@ const absoluteUrl = (code: Locale) => new URL(localizedPath(code, path), Astro.s
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={absoluteUrl(locale)} />
-    {locales.map((code) => (
-      <link rel="alternate" hreflang={code} href={absoluteUrl(code)} />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={absoluteUrl(defaultLocale)} />
+    <SEO locale={locale} title={title} description={description} image={image} type={type} />
+    <!-- Browser tab icons, phone home screen icon and bar color. -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#121212" />
     <!-- Lets feed readers find this language's blog feed. -->
     <link
       rel="alternate"
@@ -49,6 +51,8 @@ const absoluteUrl = (code: Locale) => new URL(localizedPath(code, path), Astro.s
     <ThemeScript />
     <!-- Turns page changes into smooth View Transitions. -->
     <ClientRouter />
+    <!-- Extra head tags from a page, such as the home page's structured data. -->
+    <slot name="head" />
   </head>
   <body class="flex min-h-dvh flex-col">
     <!-- Hidden until focused, so keyboard users can jump past the navigation. -->
@@ -63,5 +67,7 @@ const absoluteUrl = (code: Locale) => new URL(localizedPath(code, path), Astro.s
       <slot />
     </main>
     <Footer locale={locale} />
+    <!-- Cookie-free visit counting. It only reports data on the live Vercel site. -->
+    <Analytics />
   </body>
 </html>

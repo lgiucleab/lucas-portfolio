@@ -42,7 +42,13 @@ const { Content } = await render(post);
 const relatedProject = project ? await getEntry("projects", `${locale}/${project}`) : undefined;
 ---
 
-<BaseLayout locale={locale} title={`${title} | Lucas Giuclea Balan`} description={description}>
+<BaseLayout
+  locale={locale}
+  title={`${title} | Lucas Giuclea Balan`}
+  description={description}
+  image={`/og/${locale}/blog/${getPostSlug(post)}.png`}
+  type="article"
+>
   <article
     data-post
     data-copy-label={t("blog.copy")}
