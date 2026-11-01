@@ -2,13 +2,38 @@
 import mdx from "@astrojs/mdx";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 
 export default defineConfig({
   // Public address of the site, used later for canonical URLs, the sitemap and RSS.
   // TODO: Lucas — replace with the real address after deploying to Vercel (Phase 11).
   site: "https://lucas-giuclea-balan.vercel.app",
+
+  // Secrets read while the site runs, not at build time. "server" and "secret" mean they
+  // can only be imported by server code, so they cannot reach the browser by accident.
+  // Each one is optional, so the site still builds before the accounts exist.
+  env: {
+    schema: {
+      RESEND_API_KEY: envField.string({ context: "server", access: "secret", optional: true }),
+      CONTACT_TO_EMAIL: envField.string({ context: "server", access: "secret", optional: true }),
+      CONTACT_FROM_EMAIL: envField.string({
+        context: "server",
+        access: "secret",
+        default: "onboarding@resend.dev",
+      }),
+      UPSTASH_REDIS_REST_URL: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+      UPSTASH_REDIS_REST_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+    },
+  },
 
   // Built-in i18n routing. If you add a language, also add it to src/i18n/config.ts.
   i18n: {
