@@ -10,7 +10,7 @@ Personal developer portfolio, built with Astro. This is the base README; the ful
 
 ## Run locally
 
-You need Node.js 24 or newer.
+You need Node.js 24.
 
 ```bash
 npm install
