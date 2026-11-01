@@ -10,6 +10,8 @@ interface Props {
   href?: string;
   // Opens the link in a new tab, for sites outside the portfolio.
   external?: boolean;
+  // Saves the linked file instead of opening it.
+  download?: boolean;
   // Button behaviour inside a form. Ignored for links.
   type?: "button" | "submit";
   // Iconify name shown before the text, such as "simple-icons:github".
@@ -24,6 +26,7 @@ const {
   variant = "primary",
   href,
   external = false,
+  download = false,
   type = "button",
   icon,
   arrow = false,
@@ -39,7 +42,10 @@ const pillClasses = [
 ];
 
 // Link-only attributes. rel protects the opener page when opening a new tab.
-const linkAttributes = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+const linkAttributes = {
+  ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
+  ...(download ? { download: true } : {}),
+};
 const Element = href ? "a" : "button";
 const elementAttributes = href ? { href, ...linkAttributes } : { type };
 ---

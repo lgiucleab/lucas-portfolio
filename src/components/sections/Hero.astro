@@ -27,6 +27,12 @@ const heroLinks = ["LinkedIn", "GitHub"].flatMap((label) =>
   site.socials.filter((social) => social.label === label),
 );
 const linkedin = heroLinks[0];
+
+// The CV button only appears once this language's PDF exists in public/cv/, so it can
+// never lead to a missing file. The glob just lists the files found there.
+const cvFiles = import.meta.glob("/public/cv/*.pdf", { query: "?url" });
+const cvPath = `/public/cv/cv-${locale}.pdf`;
+const hasCv = cvPath in cvFiles;
 ---
 
 <Section id="hero" class="flex min-h-[calc(100dvh-5rem)] flex-col justify-center gap-8">
@@ -71,5 +77,15 @@ const linkedin = heroLinks[0];
         {social.label}
       </Button>
     ))}
+    {hasCv && (
+      <Button
+        variant="outline"
+        href={cvPath.replace("/public", "")}
+        icon="lucide:download"
+        download
+      >
+        {t("hero.downloadCv")}
+      </Button>
+    )}
   </div>
 </Section>

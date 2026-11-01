@@ -42,6 +42,7 @@ export const es: Record<TranslationKey, string> = {
   "hero.greetingEnd": "soy Lucas",
   "hero.badge": "Disponible para algunos proyectos",
   "hero.contact": "Contáctame",
+  "hero.downloadCv": "Descargar CV",
 
   // Experience and education timeline.
   "timeline.title": "Experiencia y formación",

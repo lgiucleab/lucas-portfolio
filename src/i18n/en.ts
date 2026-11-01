@@ -42,6 +42,7 @@ export const en = {
   "hero.greetingEnd": "I'm Lucas",
   "hero.badge": "Available for side projects",
   "hero.contact": "Contact me",
+  "hero.downloadCv": "Download CV",
 
   // Experience and education timeline.
   "timeline.title": "Experience & Education",
