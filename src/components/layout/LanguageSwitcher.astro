@@ -25,7 +25,7 @@ const currentPath = pathWithoutLocale(Astro.url.pathname);
           aria-label={localeNames[code]}
           aria-current={code === locale ? "true" : undefined}
           data-language-link={code}
-          class="text-muted hover:text-ink aria-[current]:text-ink capitalize transition-colors aria-[current]:underline"
+          class="inline-flex min-h-6 min-w-6 items-center text-muted hover:text-ink aria-[current]:text-ink capitalize transition-colors aria-[current]:underline"
         >
           {code}
         </a>
