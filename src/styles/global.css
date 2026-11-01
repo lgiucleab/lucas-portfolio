@@ -164,9 +164,10 @@
     @apply rounded-md border border-line bg-surface px-1.5 py-0.5 font-display text-sm text-ink;
   }
 
-  /* Code blocks. Long lines scroll inside the block, not the whole page. */
+  /* Code blocks. Long lines scroll inside the block, not the whole page.
+     The extra top padding keeps the Copy button clear of the first line of code. */
   & pre {
-    @apply overflow-x-auto rounded-card border border-line p-5 text-sm;
+    @apply overflow-x-auto rounded-card border border-line p-5 pt-12 text-sm;
   }
 
   & pre code {
