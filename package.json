@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "github:fallback": "node --env-file=.env scripts/update-github-fallback.mjs",
     "astro": "astro"
   },
   "dependencies": {

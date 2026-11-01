@@ -1,0 +1,25 @@
+{
+  "featured": {
+    "FileFlow": {
+      "name": "FileFlow",
+      "description": "Native macOS multiprotocol file transfer client (SFTP, SCP, FTP/FTPS, WebDAV, S3)",
+      "url": "https://github.com/lgiucleab/FileFlow",
+      "languages": ["Swift", "Shell", "Python", "Dockerfile"],
+      "stars": 0,
+      "topics": [],
+      "homepage": null,
+      "updatedAt": "2026-10-30T12:55:04Z"
+    },
+    "OpenSkyATC": {
+      "name": "OpenSkyATC",
+      "description": "Free, open-source (GPL-3.0) replacement ATC for Microsoft Flight Simulator 2024: voice, voice input, in-sim panel, taxi arrows, debrief. Runs locally.",
+      "url": "https://github.com/lgiucleab/OpenSkyATC",
+      "languages": ["C#", "Python", "Inno Setup"],
+      "stars": 0,
+      "topics": [],
+      "homepage": null,
+      "updatedAt": "2026-10-21T20:24:06Z"
+    }
+  },
+  "recent": []
+}
