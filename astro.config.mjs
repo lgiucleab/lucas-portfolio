@@ -7,8 +7,8 @@ import { defineConfig, envField } from "astro/config";
 import icon from "astro-icon";
 
 export default defineConfig({
-  // Public address of the site, used later for canonical URLs, the sitemap and RSS.
-  // TODO: Lucas — replace with the real address after deploying to Vercel (Phase 11).
+  // Public address of the site, used for canonical URLs, the sitemap and RSS.
+  // Change it here if you connect a custom domain.
   site: "https://lucas-giuclea-balan.vercel.app",
 
   // Secrets read while the site runs, not at build time. "server" and "secret" mean they
