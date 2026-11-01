@@ -30,7 +30,25 @@ The site then runs at <http://localhost:4321>.
 | `npm run lint`            | Finds code problems with ESLint              |
 | `npm run format`          | Formats all files with Prettier              |
 | `npm run format:check`    | Reports unformatted files without changing   |
+| `npm test`                | Runs the browser smoke tests                 |
+| `npm run icons`           | Regenerates the favicons                     |
 | `npm run github:fallback` | Saves GitHub data for use if the API fails   |
+
+## Tests
+
+The smoke tests in `tests/` open the site in a real browser. They check every language, theme and screen size, plus the main features, and never send an email. The first time, install the test browser:
+
+```bash
+npx playwright install chromium
+```
+
+Then run them:
+
+```bash
+npm test
+```
+
+GitHub Actions runs the formatting check, lint, build and these tests on every push.
 
 ## Add your photos
 
