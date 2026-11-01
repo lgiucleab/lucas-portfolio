@@ -1,5 +1,6 @@
 // Main Astro configuration: site URL, build behaviour and integrations.
 import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField } from "astro/config";
@@ -56,7 +57,16 @@ export default defineConfig({
 
   // astro-icon inlines SVG icons at build time, so they add no JavaScript to the browser.
   // MDX lets blog posts use Markdown plus components.
-  integrations: [mdx(), icon()],
+  // The sitemap lists every page and links each one to its translation.
+  integrations: [
+    mdx(),
+    icon(),
+    sitemap({
+      i18n: { defaultLocale: "en", locales: { en: "en", es: "es" } },
+      // Only real content: this leaves out the "/" redirect and the temporary styleguide.
+      filter: (page) => /\/(en|es)\//.test(page),
+    }),
+  ],
 
   // Syntax highlighting for code blocks, done at build time by Shiki.
   markdown: {
