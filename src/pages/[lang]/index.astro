@@ -3,12 +3,11 @@
 import type { GetStaticPaths } from "astro";
 
 import About from "@/components/sections/About.astro";
+import Contact from "@/components/sections/Contact.astro";
 import Hero from "@/components/sections/Hero.astro";
 import Projects from "@/components/sections/Projects.astro";
 import Skills from "@/components/sections/Skills.astro";
 import Timeline from "@/components/sections/Timeline.astro";
-import Section from "@/components/ui/Section.astro";
-import SectionLabel from "@/components/ui/SectionLabel.astro";
 import type { Locale } from "@/i18n/config";
 import { getLocaleStaticPaths, useTranslations } from "@/i18n";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -26,9 +25,5 @@ const t = useTranslations(locale);
   <Projects locale={locale} />
   <Skills locale={locale} />
   <About locale={locale} />
-  <!-- Temporary shell, so the Contact links work. Phase 8 replaces it. -->
-  <Section id="contact" class="space-y-6">
-    <SectionLabel>{t("nav.contact")}</SectionLabel>
-    <p>{t("placeholder.contact")}</p>
-  </Section>
+  <Contact locale={locale} />
 </BaseLayout>

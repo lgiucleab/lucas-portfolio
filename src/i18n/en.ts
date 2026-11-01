@@ -85,8 +85,24 @@ export const en = {
   "blog.copy": "Copy",
   "blog.copied": "Copied",
 
-  // Temporary text, replaced in Phase 8.
-  "placeholder.contact": "The contact form arrives in Phase 8.",
+  // Contact section.
+  "contact.intro": "Have a project or a question? Write to me and I'll get back to you.",
+  "contact.copyEmail": "Copy email",
+  "contact.copied": "Copied",
+  "contact.name": "Name",
+  "contact.email": "Email",
+  "contact.message": "Message",
+  "contact.send": "Send message",
+  "contact.sending": "Sending...",
+  "contact.success": "Thanks! Your message has been sent.",
+  "contact.errorRequired": "This field is required.",
+  "contact.errorInvalidEmail": "Enter a valid email address.",
+  "contact.errorTooShort": "Please write at least 10 characters.",
+  "contact.errorTooLong": "This text is too long.",
+  "contact.errorRateLimit": "You've sent several messages. Please try again later.",
+  "contact.errorFailure": "Your message could not be sent. Please email me directly.",
+  "contact.noScript": "The form needs JavaScript. You can email me directly instead.",
+  "contact.honeypot": "Leave this field empty",
 } as const;
 
 // The list of valid keys, used to type-check every t() call.

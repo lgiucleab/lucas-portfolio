@@ -31,6 +31,7 @@
   --theme-ink: #f5f5f5; /* Headings and emphasized text */
   --theme-muted: #a6a6a6; /* Secondary body text */
   --theme-line: #3d3d3d; /* Thin borders and background circles */
+  --theme-field: #757575; /* Form field borders, which need more contrast (3:1) */
   --theme-accent: #f5f5f5; /* Solid pill buttons */
   --theme-on-accent: #121212; /* Text and icons on top of the accent color */
 }
@@ -43,6 +44,7 @@
   --theme-ink: #121212;
   --theme-muted: #595959; /* Darker than #a6a6a6, which is unreadable on a light page */
   --theme-line: #c4c4c4;
+  --theme-field: #8a8a8a;
   --theme-accent: #121212;
   --theme-on-accent: #f5f5f5;
 }
@@ -60,6 +62,7 @@
   --color-ink: var(--theme-ink);
   --color-muted: var(--theme-muted);
   --color-line: var(--theme-line);
+  --color-field: var(--theme-field);
   --color-accent: var(--theme-accent);
   --color-on-accent: var(--theme-on-accent);
 

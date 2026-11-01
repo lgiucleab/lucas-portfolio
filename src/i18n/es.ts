@@ -85,6 +85,22 @@ export const es: Record<TranslationKey, string> = {
   "blog.copy": "Copiar",
   "blog.copied": "Copiado",
 
-  // Temporary text, replaced in Phase 8.
-  "placeholder.contact": "El formulario de contacto llega en la Fase 8.",
+  // Contact section.
+  "contact.intro": "¿Tienes un proyecto o una pregunta? Escríbeme y te responderé.",
+  "contact.copyEmail": "Copiar correo",
+  "contact.copied": "Copiado",
+  "contact.name": "Nombre",
+  "contact.email": "Correo electrónico",
+  "contact.message": "Mensaje",
+  "contact.send": "Enviar mensaje",
+  "contact.sending": "Enviando...",
+  "contact.success": "¡Gracias! Tu mensaje se ha enviado.",
+  "contact.errorRequired": "Este campo es obligatorio.",
+  "contact.errorInvalidEmail": "Introduce un correo electrónico válido.",
+  "contact.errorTooShort": "Escribe al menos 10 caracteres.",
+  "contact.errorTooLong": "Este texto es demasiado largo.",
+  "contact.errorRateLimit": "Has enviado varios mensajes. Inténtalo de nuevo más tarde.",
+  "contact.errorFailure": "No se ha podido enviar tu mensaje. Escríbeme directamente por correo.",
+  "contact.noScript": "El formulario necesita JavaScript. También puedes escribirme por correo.",
+  "contact.honeypot": "Deja este campo vacío",
 };
