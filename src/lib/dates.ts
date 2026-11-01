@@ -3,7 +3,7 @@ import type { Locale } from "@/i18n/config";
 
 // Turns a date into "September 2026". The months are named by the browser-standard Intl API,
 // so they are translated automatically. UTC stops the month shifting with the time zone.
-function formatMonth(date: Date, locale: Locale): string {
+export function formatMonth(date: Date, locale: Locale): string {
   const formatted = new Intl.DateTimeFormat(locale, {
     month: "long",
     year: "numeric",

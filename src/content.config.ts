@@ -42,7 +42,8 @@ const education = defineCollection({
 });
 
 // Featured projects. Having a file here is what makes a repository featured.
-// Phase 6 fills in stars, languages and dates from GitHub.
+// Stars, the last update and any missing details come from GitHub at build time.
+// With an empty description below the "---" block, the GitHub description is shown.
 const projects = defineCollection({
   loader: contentFiles("projects"),
   schema: ({ image }) =>
@@ -53,11 +54,11 @@ const projects = defineCollection({
       repo: z.string(),
       // Private repositories show a "Private" tag and no Code button.
       private: z.boolean().default(false),
-      // Technologies shown as tags.
-      tags: z.array(z.string()),
+      // Technologies shown as tags. Leave it out to use the languages and topics from GitHub.
+      tags: z.array(z.string()).default([]),
       // Card image, relative to this file. Optional until a screenshot exists.
       image: image().optional(),
-      // Live demo address for the Preview button. It overrides the repository's homepage.
+      // Live demo address for the Preview button. Without it, the repository's homepage is used.
       preview: z.url().optional(),
       // Position on the page: lower numbers come first.
       order: z.number().default(100),

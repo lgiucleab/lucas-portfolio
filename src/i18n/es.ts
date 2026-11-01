@@ -55,6 +55,10 @@ export const es: Record<TranslationKey, string> = {
   "projects.code": "Código",
   "projects.preview": "Ver demo",
   "projects.private": "Privado",
+  "projects.stars": "Estrellas en GitHub",
+  "projects.updated": "Actualizado",
+  "projects.moreTitle": "Más en GitHub",
+  "projects.viewAll": "Ver todo en GitHub",
 
   // Skills section.
   "skills.title": "Habilidades",

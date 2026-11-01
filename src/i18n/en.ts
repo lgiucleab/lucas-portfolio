@@ -55,6 +55,10 @@ export const en = {
   "projects.code": "Code",
   "projects.preview": "Preview",
   "projects.private": "Private",
+  "projects.stars": "GitHub stars",
+  "projects.updated": "Updated",
+  "projects.moreTitle": "More on GitHub",
+  "projects.viewAll": "View all on GitHub",
 
   // Skills section.
   "skills.title": "Skills",

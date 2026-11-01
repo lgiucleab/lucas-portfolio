@@ -1,4 +1,5 @@
 // Personal details used across the site. Edit them here and every page updates.
+import { GITHUB_USERNAME } from "@/lib/github-api";
 
 // Shape of one social link.
 interface SocialLink {
@@ -14,7 +15,11 @@ export const site = {
   email: "lucgiubal@gmail.com",
   // Social profiles, in display order.
   socials: [
-    { label: "GitHub", href: "https://github.com/lgiucleab", icon: "simple-icons:github" },
+    {
+      label: "GitHub",
+      href: `https://github.com/${GITHUB_USERNAME}`,
+      icon: "simple-icons:github",
+    },
     {
       label: "LinkedIn",
       href: "https://www.linkedin.com/in/lucas-giuclea-balan-962a44339/",

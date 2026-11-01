@@ -1,10 +1,13 @@
 ---
-// Featured projects. Every file in src/content/projects/<language>/ becomes one project here.
+// Featured projects plus the "More on GitHub" list.
+// Every file in src/content/projects/<language>/ becomes one featured project here.
+import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import { render } from "astro:content";
 
 import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
 import Button from "@/components/ui/Button.astro";
+import Card from "@/components/ui/Card.astro";
 import Section from "@/components/ui/Section.astro";
 import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
@@ -13,6 +16,8 @@ import { techIcons } from "@/config/tech-icons";
 import type { Locale } from "@/i18n/config";
 import { useTranslations } from "@/i18n";
 import { getLocalizedEntries } from "@/lib/content";
+import { formatMonth } from "@/lib/dates";
+import { getGitHubData } from "@/lib/github";
 
 interface Props {
   // The language of the current page.
@@ -29,8 +34,9 @@ entries.sort((a, b) => a.data.order - b.data.order);
 // render() prepares each project's description text for display.
 const rendered = await Promise.all(entries.map((entry) => render(entry)));
 
-// The account's GitHub address comes from the shared social list.
-const github = site.socials.find((social) => social.label === "GitHub");
+// Live repository details, or saved ones if GitHub could not be reached.
+const github = await getGitHubData();
+const githubProfile = site.socials.find((social) => social.label === "GitHub");
 ---
 
 <Section id="projects" class="space-y-16">
@@ -40,6 +46,16 @@ const github = site.socials.find((social) => social.label === "GitHub");
   {entries.map((entry, index) => {
     const Description = rendered[index]?.Content;
     const { title, repo, private: isPrivate, tags, image, preview } = entry.data;
+    const repoData = github.featured[repo];
+
+    // Details written in the content file win. GitHub fills in what was left out.
+    const shownTags =
+      tags.length > 0
+        ? tags
+        : [...(repoData?.languages.slice(0, 3) ?? []), ...(repoData?.topics ?? [])].slice(0, 5);
+    const previewUrl = preview ?? (repoData?.homepage || undefined);
+    const hasDescription = Boolean(entry.body?.trim());
+
     return (
       <article class="reveal grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Every second project swaps sides on wide screens, as in the design. */}
@@ -70,25 +86,41 @@ const github = site.socials.find((social) => social.label === "GitHub");
                 <Tag icon="lucide:lock">{t("projects.private")}</Tag>
               </li>
             )}
-            {tags.map((tag) => (
+            {shownTags.map((tag) => (
               <li>{techIcons[tag] ? <Tag icon={techIcons[tag]}>{tag}</Tag> : <Tag>{tag}</Tag>}</li>
             ))}
           </ul>
-          <div>{Description && <Description />}</div>
-          {(!isPrivate || preview) && (
+          <div>
+            {hasDescription && Description ? <Description /> : <p>{repoData?.description}</p>}
+          </div>
+          {repoData && (
+            <p class="flex flex-wrap items-center gap-4 text-sm">
+              {repoData.stars > 0 && (
+                <span class="inline-flex items-center gap-1">
+                  <Icon name="lucide:star" class="size-4" aria-hidden="true" />
+                  <span class="sr-only">{t("projects.stars")}:</span>
+                  {repoData.stars}
+                </span>
+              )}
+              <span>
+                {t("projects.updated")}: {formatMonth(new Date(repoData.updatedAt), locale)}
+              </span>
+            </p>
+          )}
+          {(!isPrivate || previewUrl) && (
             <div class="flex flex-wrap gap-3">
               {!isPrivate && (
                 <Button
                   variant="outline"
-                  href={`${github?.href}/${repo}`}
+                  href={`${githubProfile?.href}/${repo}`}
                   icon="simple-icons:github"
                   external
                 >
                   {t("projects.code")}
                 </Button>
               )}
-              {preview && (
-                <Button href={preview} external arrow>
+              {previewUrl && (
+                <Button href={previewUrl} external arrow>
                   {t("projects.preview")}
                 </Button>
               )}
@@ -98,4 +130,42 @@ const github = site.socials.find((social) => social.label === "GitHub");
       </article>
     );
   })}
+
+  <div class="space-y-6">
+    {github.recent.length > 0 && (
+      <>
+        <h3 class="text-xl font-medium">{t("projects.moreTitle")}</h3>
+        <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {github.recent.map((repo) => (
+            <Card as="li" interactive class="reveal space-y-3">
+              <h4 class="break-words">
+                <a
+                  href={repo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="hover:underline"
+                >
+                  {repo.name}
+                </a>
+              </h4>
+              {repo.description && <p class="text-sm">{repo.description}</p>}
+              <p class="flex flex-wrap items-center gap-4 text-sm">
+                {repo.languages[0] && <span>{repo.languages[0]}</span>}
+                {repo.stars > 0 && (
+                  <span class="inline-flex items-center gap-1">
+                    <Icon name="lucide:star" class="size-4" aria-hidden="true" />
+                    <span class="sr-only">{t("projects.stars")}:</span>
+                    {repo.stars}
+                  </span>
+                )}
+              </p>
+            </Card>
+          ))}
+        </ul>
+      </>
+    )}
+    <Button variant="outline" href={githubProfile?.href} icon="simple-icons:github" external>
+      {t("projects.viewAll")}
+    </Button>
+  </div>
 </Section>
