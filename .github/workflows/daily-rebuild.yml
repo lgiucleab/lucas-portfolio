@@ -1,0 +1,32 @@
+# Rebuilds the site once a day, so GitHub data and the footer year stay current.
+# It only asks Vercel to deploy, and Vercel does the build.
+#
+# Setup (Phase 11): create a Deploy Hook in Vercel, then save its address in this GitHub
+# repository under Settings > Secrets and variables > Actions, as VERCEL_DEPLOY_HOOK.
+name: Daily rebuild
+
+on:
+  schedule:
+    # Every day at 05:00 UTC. Format: minute hour day month weekday.
+    - cron: "0 5 * * *"
+  # Adds a "Run workflow" button in the GitHub Actions tab, for manual runs.
+  workflow_dispatch:
+
+# This job needs no access to the repository's contents.
+permissions: {}
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the Vercel Deploy Hook
+        env:
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          # Without the secret there is nothing to call, so the run ends cleanly.
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK is not set, so no deploy was requested."
+            exit 0
+          fi
+          # --fail marks the run as failed if Vercel answers with an error.
+          curl --fail --silent --show-error --request POST "$DEPLOY_HOOK"
