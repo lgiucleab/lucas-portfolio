@@ -5,13 +5,15 @@ import { readFile, writeFile } from "node:fs/promises";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 
-// The initials and colors. Edit these to restyle every icon at once.
-const INITIALS = "LG";
-const BACKGROUND = "#121212";
-const TEXT_COLOR = "#f5f5f5";
+// The letter and colors. Edit these to restyle every icon at once.
+// One serif italic letter stays readable at 16px, where two letters would blur.
+const INITIALS = "L";
+const BACKGROUND = "#111110"; // Dark "ink" page color
+const TEXT_COLOR = "#f0905a"; // Warm highlight color
 
 const SVG_SIZE = 512;
-const FONT_FILE = "node_modules/@fontsource/fira-code/files/fira-code-latin-600-normal.woff";
+const FONT_FILE =
+  "node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff";
 
 // Draws the icon as vector shapes, so favicon.svg needs no font installed.
 const svg = await satori(
@@ -27,8 +29,10 @@ const svg = await satori(
         borderRadius: 112,
         backgroundColor: BACKGROUND,
         color: TEXT_COLOR,
-        fontFamily: "Fira Code",
-        fontSize: 240,
+        fontFamily: "Instrument Serif",
+        fontSize: 400,
+        // Nudges the italic letter so it looks centred.
+        paddingRight: 24,
       },
       children: INITIALS,
     },
@@ -36,7 +40,9 @@ const svg = await satori(
   {
     width: SVG_SIZE,
     height: SVG_SIZE,
-    fonts: [{ name: "Fira Code", data: await readFile(FONT_FILE), weight: 600, style: "normal" }],
+    fonts: [
+      { name: "Instrument Serif", data: await readFile(FONT_FILE), weight: 400, style: "normal" },
+    ],
   },
 );
 
