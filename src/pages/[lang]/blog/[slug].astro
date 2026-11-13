@@ -57,7 +57,7 @@ const relatedProject = project ? await getEntry("projects", `${locale}/${project
   >
     <a
       href={localizedPath(locale, "blog")}
-      class="text-ink inline-flex items-center gap-2 text-sm italic underline-offset-4 hover:underline"
+      class="text-ink inline-flex items-center gap-2 text-sm underline-offset-4 hover:underline"
     >
       <Icon name="lucide:arrow-left" class="size-4" aria-hidden="true" />
       {t("blog.back")}
@@ -129,7 +129,7 @@ const relatedProject = project ? await getEntry("projects", `${locale}/${project
       button.type = "button";
       button.textContent = copyLabel;
       button.className =
-        "bg-accent text-on-accent absolute top-3 right-3 rounded-full px-3 py-1 text-xs italic";
+        "bg-accent text-on-accent absolute top-3 right-3 rounded-full px-3 py-1 text-xs";
 
       button.addEventListener("click", async () => {
         // The browser can refuse clipboard access. The code then stays selectable by hand.

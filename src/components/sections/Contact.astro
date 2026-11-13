@@ -48,7 +48,7 @@ const fields = [
           data-copy-email={site.email}
           data-label-copy={t("contact.copyEmail")}
           data-label-copied={t("contact.copied")}
-          class="border-line text-ink hover:border-ink inline-flex min-h-9 items-center gap-2 rounded-full border px-3 text-xs italic transition-colors"
+          class="border-line text-ink hover:border-ink inline-flex min-h-9 items-center gap-2 rounded-full border px-3 text-xs transition-colors"
         >
           <Icon name="lucide:copy" class="size-3.5" aria-hidden="true" />
           <span data-copy-text aria-live="polite">
@@ -105,7 +105,7 @@ const fields = [
             <p
               id={`contact-${field.name}-error`}
               data-field-error={field.name}
-              class="text-ink text-sm italic"
+              class="text-ink text-sm"
             ></p>
           </div>
         ))}
@@ -122,11 +122,7 @@ const fields = [
             aria-describedby="contact-message-error"
             class:list={[fieldClasses, "resize-y"]}
           ></textarea>
-          <p
-            id="contact-message-error"
-            data-field-error="message"
-            class="text-ink text-sm italic"
-          ></p>
+          <p id="contact-message-error" data-field-error="message" class="text-ink text-sm"></p>
         </div>
 
         <!-- Honeypot: moved off screen and skipped by keyboard and screen readers. -->

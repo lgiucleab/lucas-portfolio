@@ -8,10 +8,11 @@
 /* Loads Tailwind's reset, default theme and utility classes. */
 @import "tailwindcss";
 
-/* Self-hosted variable fonts. "wght" means one file covers every font weight. */
-@import "@fontsource-variable/fira-code/wght.css";
-@import "@fontsource-variable/open-sans/wght.css";
-@import "@fontsource-variable/open-sans/wght-italic.css";
+/* Self-hosted fonts. "wght" variable files cover every weight in one file. */
+@import "@fontsource-variable/geist/wght.css";
+@import "@fontsource-variable/geist-mono/wght.css";
+/* Instrument Serif only has one weight, so only its italic is loaded: it is the accent font. */
+@import "@fontsource/instrument-serif/400-italic.css";
 
 /* Makes Tailwind's "dark:" prefix follow our data-theme attribute, not the OS setting. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
@@ -26,27 +27,31 @@
   /* Tells the browser to draw scrollbars and form controls in dark style. */
   color-scheme: dark;
 
-  --theme-page: #121212; /* Page background */
-  --theme-surface: #1a1a1a; /* Cards, when they need to stand out from the page */
-  --theme-ink: #f5f5f5; /* Headings and emphasized text */
-  --theme-muted: #a6a6a6; /* Secondary body text */
-  --theme-line: #3d3d3d; /* Thin borders and background circles */
-  --theme-field: #757575; /* Form field borders, which need more contrast (3:1) */
-  --theme-accent: #f5f5f5; /* Solid pill buttons */
-  --theme-on-accent: #121212; /* Text and icons on top of the accent color */
+  /* "Ink" theme: a warm off-black, softer on the eyes than pure black. */
+  --theme-page: #111110; /* Page background */
+  --theme-surface: #1b1b19; /* Tags, code blocks and image placeholders */
+  --theme-ink: #edece8; /* Headings and emphasized text (16:1 on the page) */
+  --theme-muted: #9c9a93; /* Secondary body text (6.7:1) */
+  --theme-line: #2e2d2a; /* Hairline dividers, which are decorative */
+  --theme-field: #706e68; /* Form field borders, which need 3:1 contrast */
+  --theme-accent: #edece8; /* Solid pill buttons */
+  --theme-on-accent: #111110; /* Text and icons on top of the accent color */
+  --theme-highlight: #f0905a; /* The one warm color: serif accent words and hovers (8:1) */
 }
 
 [data-theme="light"] {
   color-scheme: light;
 
-  --theme-page: #f5f5f5;
-  --theme-surface: #ffffff;
-  --theme-ink: #121212;
-  --theme-muted: #595959; /* Darker than #a6a6a6, which is unreadable on a light page */
-  --theme-line: #c4c4c4;
-  --theme-field: #8a8a8a;
-  --theme-accent: #121212;
-  --theme-on-accent: #f5f5f5;
+  /* "Paper" theme: a warm off-white, like a printed page. */
+  --theme-page: #f7f6f3;
+  --theme-surface: #efede7;
+  --theme-ink: #141413; /* 17:1 on the page */
+  --theme-muted: #65645f; /* 5.5:1 */
+  --theme-line: #dcd9d0;
+  --theme-field: #87857d; /* 3.4:1 */
+  --theme-accent: #141413;
+  --theme-on-accent: #f7f6f3;
+  --theme-highlight: #b4400c; /* Darker orange, so it stays readable on paper (5.3:1) */
 }
 
 /* 3. DESIGN TOKENS -----------------------------------------------------------
@@ -65,10 +70,14 @@
   --color-field: var(--theme-field);
   --color-accent: var(--theme-accent);
   --color-on-accent: var(--theme-on-accent);
+  --color-highlight: var(--theme-highlight);
 
-  /* Fonts: font-display for headings and labels, font-sans for body text. */
-  --font-display: "Fira Code Variable", ui-monospace, monospace;
-  --font-sans: "Open Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  /* Fonts: font-display for headings, font-sans for text, font-mono for numbers,
+     tags and labels, font-serif for the italic accent word in headings. */
+  --font-display: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
 
   /* Fluid type sizes: clamp(smallest, scales with screen width, largest). */
   --text-display: clamp(2.75rem, 10vw, 6.5rem); /* Hero title */
@@ -81,12 +90,9 @@
   --container-text: 40rem; /* Comfortable reading width: max-w-text */
   --container-post: 46rem; /* Blog posts, slightly wider for code: max-w-post */
 
-  /* Corner radius. Pills use Tailwind's rounded-full. */
-  --radius-card: 2rem; /* Cards: rounded-card */
-  --radius-panel: 3rem; /* Large panels and images: rounded-panel */
-
-  /* The design is flat: depth comes from borders, so the only shadow is subtle. */
-  --shadow-soft: 0 1rem 2.5rem -1.5rem rgb(0 0 0 / 0.35);
+  /* Corner radius. Editorial design keeps corners small. Pills use rounded-full. */
+  --radius-card: 0.75rem; /* Cards and menus: rounded-card */
+  --radius-panel: 1rem; /* Images: rounded-panel */
 
   /* Animation speed. */
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
@@ -111,17 +117,28 @@
       color 200ms;
   }
 
-  /* Headings use the code-style font and the strongest text color. */
+  /* Headings: tight letter spacing makes large Geist look set by hand. */
   h1,
   h2,
   h3,
   h4 {
-    @apply font-display text-ink;
+    @apply font-display tracking-tight text-ink;
   }
 
-  /* Highlighted key words: italic and brighter, as in the Behance design. */
+  /* Highlighted key words: the serif italic accent. Instrument Serif looks small
+     next to Geist, so it is drawn slightly larger. */
   em {
-    @apply text-ink italic;
+    @apply font-serif text-[1.08em] font-normal text-ink italic;
+  }
+
+  /* Inside headings the accent word also takes the warm highlight color. */
+  :is(h1, h2) em {
+    @apply text-highlight;
+  }
+
+  /* Selected text uses the highlight color too. */
+  ::selection {
+    @apply bg-highlight text-page;
   }
 
   /* Visible keyboard focus on every interactive element. */
@@ -159,12 +176,12 @@
   }
 
   & blockquote {
-    @apply border-l-2 border-line pl-5 italic;
+    @apply border-l-2 border-line pl-5 font-serif text-2xl text-ink italic;
   }
 
   /* Inline code, such as `npm install`. */
   & :not(pre) > code {
-    @apply rounded-md border border-line bg-surface px-1.5 py-0.5 font-display text-sm text-ink;
+    @apply rounded-md border border-line bg-surface px-1.5 py-0.5 font-mono text-sm text-ink;
   }
 
   /* Code blocks. Long lines scroll inside the block, not the whole page.
@@ -174,7 +191,7 @@
   }
 
   & pre code {
-    @apply font-display;
+    @apply font-mono;
   }
 }
 
