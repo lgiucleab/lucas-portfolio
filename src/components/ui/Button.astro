@@ -1,5 +1,5 @@
 ---
-// Pill button in the Behance style. Renders a link when given href, otherwise a <button>.
+// Pill button. Renders a link when given href, otherwise a <button>.
 // The button text goes between the tags: <Button href="/en/blog">Read more</Button>
 import { Icon } from "astro-icon/components";
 
@@ -16,7 +16,7 @@ interface Props {
   type?: "button" | "submit";
   // Iconify name shown before the text, such as "simple-icons:github".
   icon?: string;
-  // Adds the round arrow companion from the design.
+  // Adds an arrow after the text that slides on hover.
   arrow?: boolean;
   // Extra Tailwind classes from the parent.
   class?: string;
@@ -33,14 +33,6 @@ const {
   class: className,
 } = Astro.props;
 
-// Shared by the pill in both link and button form.
-const pillClasses = [
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-7 text-sm transition-colors",
-  variant === "primary"
-    ? "bg-accent text-on-accent"
-    : "border border-line text-muted group-hover:border-ink group-hover:text-ink",
-];
-
 // Link-only attributes. rel protects the opener page when opening a new tab.
 const linkAttributes = {
   ...(external ? { target: "_blank", rel: "noopener noreferrer" } : {}),
@@ -50,19 +42,24 @@ const Element = href ? "a" : "button";
 const elementAttributes = href ? { href, ...linkAttributes } : { type };
 ---
 
-<Element {...elementAttributes} class:list={["group inline-flex items-center gap-2", className]}>
-  <span class:list={pillClasses}>
-    {icon && <Icon name={icon} class="size-4" aria-hidden="true" />}
-    <slot />
-  </span>
+<Element
+  {...elementAttributes}
+  class:list={[
+    // min-h-11 keeps the touch target at 44px.
+    "group inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition-colors",
+    variant === "primary"
+      ? "bg-accent text-on-accent hover:bg-highlight hover:text-page"
+      : "border-line text-ink hover:border-ink border",
+    className,
+  ]}
+>
+  {icon && <Icon name={icon} class="size-4" aria-hidden="true" />}
+  <slot />
   {arrow && (
-    <span
-      class:list={[
-        "flex size-11 items-center justify-center rounded-full transition-transform duration-300 ease-soft group-hover:translate-x-1",
-        variant === "primary" ? "bg-accent text-on-accent" : "border border-line text-ink",
-      ]}
-    >
-      <Icon name="lucide:arrow-right" class="size-4" aria-hidden="true" />
-    </span>
+    <Icon
+      name={external ? "lucide:arrow-up-right" : "lucide:arrow-right"}
+      class="ease-soft size-4 transition-transform duration-300 group-hover:translate-x-0.5"
+      aria-hidden="true"
+    />
   )}
 </Element>

@@ -1,15 +1,12 @@
 ---
-// Featured projects plus the "More on GitHub" list.
+// Featured projects as numbered rows, plus the "More on GitHub" list.
 // Every file in src/content/projects/<language>/ becomes one featured project here.
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import { render } from "astro:content";
 
-import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
 import Button from "@/components/ui/Button.astro";
-import Card from "@/components/ui/Card.astro";
 import Section from "@/components/ui/Section.astro";
-import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
 import { site } from "@/config/site";
 import { techIcons } from "@/config/tech-icons";
@@ -39,127 +36,132 @@ const github = await getGitHubData();
 const githubProfile = site.socials.find((social) => social.label === "GitHub");
 ---
 
-<Section id="projects" class="space-y-16">
-  <BackgroundCircle slot="background" class="top-1/3 -right-48 size-[36rem]" />
-  <SectionLabel>{t("projects.title")}</SectionLabel>
+<Section id="projects" label={t("projects.title")} number="02" class="space-y-20">
+  <div class="border-line border-t">
+    {entries.map((entry, index) => {
+      const Description = rendered[index]?.Content;
+      const { title, repo, private: isPrivate, tags, image, preview } = entry.data;
+      const repoData = github.featured[repo];
 
-  {entries.map((entry, index) => {
-    const Description = rendered[index]?.Content;
-    const { title, repo, private: isPrivate, tags, image, preview } = entry.data;
-    const repoData = github.featured[repo];
+      // Details written in the content file win. GitHub fills in what was left out.
+      const shownTags =
+        tags.length > 0
+          ? tags
+          : [...(repoData?.languages.slice(0, 3) ?? []), ...(repoData?.topics ?? [])].slice(0, 5);
+      const previewUrl = preview ?? (repoData?.homepage || undefined);
+      const hasDescription = Boolean(entry.body?.trim());
 
-    // Details written in the content file win. GitHub fills in what was left out.
-    const shownTags =
-      tags.length > 0
-        ? tags
-        : [...(repoData?.languages.slice(0, 3) ?? []), ...(repoData?.topics ?? [])].slice(0, 5);
-    const previewUrl = preview ?? (repoData?.homepage || undefined);
-    const hasDescription = Boolean(entry.body?.trim());
-
-    return (
-      <article class="reveal grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
-        {/* Every second project swaps sides on wide screens, as in the design. */}
-        <div class:list={["min-w-0", index % 2 === 1 && "lg:order-last"]}>
-          {image ? (
-            <Image
-              src={image}
-              alt={title}
-              width={720}
-              class="rounded-panel aspect-[16/10] w-full object-cover"
-            />
-          ) : (
-            <div
-              aria-hidden="true"
-              class="rounded-panel border-line bg-surface font-display text-ink relative flex aspect-[16/10] items-center justify-center overflow-hidden border text-2xl sm:text-4xl"
-            >
-              <BackgroundCircle class="-right-16 -bottom-24 size-72" />
-              {title}
-            </div>
-          )}
-        </div>
-
-        <div class="min-w-0 space-y-5">
-          <h3 class="text-2xl font-medium">{title}</h3>
-          <ul class="flex flex-wrap gap-2">
-            {isPrivate && (
-              <li>
-                <Tag icon="lucide:lock">{t("projects.private")}</Tag>
-              </li>
-            )}
-            {shownTags.map((tag) => (
-              <li>{techIcons[tag] ? <Tag icon={techIcons[tag]}>{tag}</Tag> : <Tag>{tag}</Tag>}</li>
-            ))}
-          </ul>
-          <div>
-            {hasDescription && Description ? <Description /> : <p>{repoData?.description}</p>}
-          </div>
-          {repoData && (
-            <p class="flex flex-wrap items-center gap-4 text-sm">
-              {repoData.stars > 0 && (
-                <span class="inline-flex items-center gap-1">
-                  <Icon name="lucide:star" class="size-4" aria-hidden="true" />
-                  <span class="sr-only">{t("projects.stars")}:</span>
-                  {repoData.stars}
-                </span>
-              )}
-              <span>
-                {t("projects.updated")}: {formatMonth(new Date(repoData.updatedAt), locale)}
-              </span>
+      return (
+        <article class="reveal border-line grid gap-6 border-b py-10 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:gap-10">
+          {/* Left: number, title and the small facts. */}
+          <div class="space-y-3">
+            <p aria-hidden="true" class="text-muted font-mono text-xs">
+              {String(index + 1).padStart(2, "0")}
             </p>
-          )}
-          {(!isPrivate || previewUrl) && (
-            <div class="flex flex-wrap gap-3">
-              {!isPrivate && (
-                <Button
-                  variant="outline"
-                  href={`${githubProfile?.href}/${repo}`}
-                  icon="simple-icons:github"
-                  external
-                >
-                  {t("projects.code")}
-                </Button>
-              )}
-              {previewUrl && (
-                <Button href={previewUrl} external arrow>
-                  {t("projects.preview")}
-                </Button>
-              )}
+            <h3 class="text-3xl font-medium tracking-tight sm:text-4xl">{title}</h3>
+            {repoData && (
+              <p class="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs">
+                {repoData.stars > 0 && (
+                  <span class="inline-flex items-center gap-1">
+                    <Icon name="lucide:star" class="size-3.5" aria-hidden="true" />
+                    <span class="sr-only">{t("projects.stars")}:</span>
+                    {repoData.stars}
+                  </span>
+                )}
+                <span>
+                  {t("projects.updated")}: {formatMonth(new Date(repoData.updatedAt), locale)}
+                </span>
+              </p>
+            )}
+          </div>
+
+          {/* Right: description, technologies and links. */}
+          <div class="space-y-5">
+            {image && (
+              <Image
+                src={image}
+                alt={title}
+                width={720}
+                class="rounded-panel aspect-[16/10] w-full object-cover"
+              />
+            )}
+            <div class="max-w-text">
+              {hasDescription && Description ? <Description /> : <p>{repoData?.description}</p>}
             </div>
-          )}
-        </div>
-      </article>
-    );
-  })}
+            <ul class="flex flex-wrap gap-2">
+              {isPrivate && (
+                <li>
+                  <Tag icon="lucide:lock">{t("projects.private")}</Tag>
+                </li>
+              )}
+              {shownTags.map((tag) => (
+                <li>
+                  {techIcons[tag] ? <Tag icon={techIcons[tag]}>{tag}</Tag> : <Tag>{tag}</Tag>}
+                </li>
+              ))}
+            </ul>
+            {(!isPrivate || previewUrl) && (
+              <div class="flex flex-wrap gap-3">
+                {previewUrl && (
+                  <Button href={previewUrl} external arrow>
+                    {t("projects.preview")}
+                  </Button>
+                )}
+                {!isPrivate && (
+                  <Button
+                    variant="outline"
+                    href={`${githubProfile?.href}/${repo}`}
+                    icon="simple-icons:github"
+                    external
+                  >
+                    {t("projects.code")}
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </article>
+      );
+    })}
+  </div>
 
   <div class="space-y-6">
     {github.recent.length > 0 && (
       <>
         <h3 class="text-xl font-medium">{t("projects.moreTitle")}</h3>
-        <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Compact hairline rows. The whole row is the link, so it is easy to hit. */}
+        <ul class="border-line border-t">
           {github.recent.map((repo) => (
-            <Card as="li" interactive class="reveal space-y-3">
-              <h4 class="break-words">
-                <a
-                  href={repo.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="hover:underline"
-                >
-                  {repo.name}
-                </a>
-              </h4>
-              {repo.description && <p class="text-sm">{repo.description}</p>}
-              <p class="flex flex-wrap items-center gap-4 text-sm">
-                {repo.languages[0] && <span>{repo.languages[0]}</span>}
-                {repo.stars > 0 && (
-                  <span class="inline-flex items-center gap-1">
-                    <Icon name="lucide:star" class="size-4" aria-hidden="true" />
-                    <span class="sr-only">{t("projects.stars")}:</span>
-                    {repo.stars}
+            <li class="border-line border-b">
+              <a
+                href={repo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group grid gap-1 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-baseline sm:gap-6"
+              >
+                <span class="min-w-0">
+                  <span class="text-ink group-hover:text-highlight font-medium break-words transition-colors">
+                    {repo.name}
                   </span>
-                )}
-              </p>
-            </Card>
+                  {repo.description && <span class="block text-sm">{repo.description}</span>}
+                </span>
+                <span class="flex items-center gap-4 font-mono text-xs">
+                  {repo.languages[0] && <span>{repo.languages[0]}</span>}
+                  {repo.stars > 0 && (
+                    <span class="inline-flex items-center gap-1">
+                      <Icon name="lucide:star" class="size-3.5" aria-hidden="true" />
+                      <span class="sr-only">{t("projects.stars")}:</span>
+                      {repo.stars}
+                    </span>
+                  )}
+                  <Icon
+                    name="lucide:arrow-up-right"
+                    class="text-ink size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </span>
+              </a>
+            </li>
           ))}
         </ul>
       </>

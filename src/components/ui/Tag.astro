@@ -1,5 +1,5 @@
 ---
-// Small pill for a technology name, such as "TypeScript". The text goes between the tags.
+// Small label for a technology name, such as "TypeScript". The text goes between the tags.
 import { Icon } from "astro-icon/components";
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 const { icon } = Astro.props;
 ---
 
-<span class="border-line text-ink font-mono inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs">
+<span class="bg-surface text-ink inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-xs">
   {icon && <Icon name={icon} class="size-3.5" aria-hidden="true" />}
   <slot />
 </span>

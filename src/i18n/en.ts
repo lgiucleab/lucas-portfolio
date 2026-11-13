@@ -37,9 +37,8 @@ export const en = {
   "footer.social": "Social links",
   "footer.email": "Email",
 
-  // Hero section. The greeting is split so its two parts sit on separate lines.
-  "hero.greetingStart": "Hey,",
-  "hero.greetingEnd": "I'm Lucas",
+  // Hero section. The greeting comes before the name, which is styled separately.
+  "hero.greeting": "Hey, I'm",
   "hero.badge": "Available for side projects",
   "hero.contact": "Contact me",
   "hero.downloadCv": "Download CV",
@@ -78,7 +77,6 @@ export const en = {
 
   // Blog.
   "blog.empty": "Articles are coming soon.",
-  "blog.readMore": "Read more",
   "blog.minutes": "min read",
   "blog.back": "Back to the blog",
   "blog.relatedProject": "Related project",

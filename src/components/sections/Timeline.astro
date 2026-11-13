@@ -1,10 +1,9 @@
 ---
-// Vertical timeline that merges the experience and education collections, newest first.
+// Experience and education in one list of hairline rows, newest first.
 import { Icon } from "astro-icon/components";
 import { render } from "astro:content";
 
 import Section from "@/components/ui/Section.astro";
-import SectionLabel from "@/components/ui/SectionLabel.astro";
 import Tag from "@/components/ui/Tag.astro";
 import type { Locale } from "@/i18n/config";
 import { useTranslations } from "@/i18n";
@@ -31,44 +30,42 @@ const entries = [...experience, ...education].sort(
 const rendered = await Promise.all(entries.map((entry) => render(entry)));
 ---
 
-<Section id="experience" class="space-y-12">
-  <SectionLabel>{t("timeline.title")}</SectionLabel>
-
-  <ol class="border-line space-y-12 border-l">
+<Section id="experience" label={t("timeline.title")} number="01">
+  <!-- Each entry is a hairline row: dates on the left, details on the right. -->
+  <ol class="border-line border-t">
     {entries.map((entry, index) => {
       const Description = rendered[index]?.Content;
       const { title, place, location, startDate, endDate, link } = entry.data;
       return (
-        <li class="reveal relative pl-8">
-          {/* The dot sits on top of the vertical line. */}
-          <span
-            aria-hidden="true"
-            class="bg-ink absolute top-2 -left-[5px] size-2.5 rounded-full"
-          />
-          <Tag>{t(entry.collection === "education" ? "timeline.education" : "timeline.work")}</Tag>
-          <h3 class="mt-3 text-xl font-medium">{title}</h3>
-          <h4 class="mt-1 font-sans text-base font-normal">
-            {location ? `${place}, ${location}` : place}
-          </h4>
-          <p class="mt-1 text-sm">
-            <time datetime={startDate.toISOString().slice(0, 7)}>
+        <li class="reveal border-line grid gap-3 border-b py-8 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-8">
+          <p class="space-y-2 font-mono text-xs">
+            <time datetime={startDate.toISOString().slice(0, 7)} class="block">
               {formatDateRange(startDate, endDate, locale, t("timeline.present"))}
             </time>
+            <Tag>
+              {t(entry.collection === "education" ? "timeline.education" : "timeline.work")}
+            </Tag>
           </p>
-          <div class="max-w-text mt-3">{Description && <Description />}</div>
-          {link && (
-            <a
-              href={link}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-ink mt-3 inline-flex items-center gap-1 text-sm underline-offset-4 hover:underline"
-            >
-              {t("timeline.learnMore")}
-              {/* Tells screen reader users where each "Learn more" leads. */}
-              <span class="sr-only">: {place}</span>
-              <Icon name="lucide:arrow-up-right" class="size-4" aria-hidden="true" />
-            </a>
-          )}
+          <div>
+            <h3 class="text-xl font-medium">{title}</h3>
+            <h4 class="mt-1 font-sans text-base font-normal">
+              {location ? `${place}, ${location}` : place}
+            </h4>
+            <div class="max-w-text mt-3">{Description && <Description />}</div>
+            {link && (
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-ink mt-3 inline-flex items-center gap-1 text-sm underline-offset-4 hover:underline"
+              >
+                {t("timeline.learnMore")}
+                {/* Tells screen reader users where each "Learn more" leads. */}
+                <span class="sr-only">: {place}</span>
+                <Icon name="lucide:arrow-up-right" class="size-4" aria-hidden="true" />
+              </a>
+            )}
+          </div>
         </li>
       );
     })}

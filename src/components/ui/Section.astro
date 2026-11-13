@@ -1,21 +1,38 @@
 ---
-// Standard page section: full-width outer area with centred, width-limited content.
-// The outer area clips the background circles, so they never cause sideways scrolling.
+// Standard page section: a hairline on top, the numbered label in a left column on
+// wide screens, and the content on the right. Without a label (the hero), the
+// content uses the full width.
+import SectionLabel from "./SectionLabel.astro";
 
 interface Props {
   // Anchor name. It must match the link in Header.astro.
   id: string;
-  // Extra Tailwind classes for the inner content area.
+  // Section title shown in the label column, such as "Projects".
+  label?: string;
+  // Two-digit position shown before the label, such as "02".
+  number?: string;
+  // Extra Tailwind classes for the content area.
   class?: string;
 }
 
-const { id, class: className } = Astro.props;
+const { id, label, number, class: className } = Astro.props;
 ---
 
-<section id={id} class="relative overflow-hidden">
-  <!-- Named slot for BackgroundCircle, which sits behind the content. -->
-  <slot name="background" />
-  <div class:list={["max-w-page px-gutter py-section relative mx-auto", className]}>
-    <slot />
+<section id={id} class:list={[label && "border-line border-t"]}>
+  <div
+    class:list={[
+      "max-w-page px-gutter py-section mx-auto",
+      label && "grid gap-10 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16",
+    ]}
+  >
+    {label && (
+      // Sticky on wide screens, so the label stays beside long sections.
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <SectionLabel number={number}>{label}</SectionLabel>
+      </div>
+    )}
+    <div class:list={["min-w-0", className]}>
+      <slot />
+    </div>
   </div>
 </section>

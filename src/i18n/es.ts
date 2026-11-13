@@ -37,9 +37,8 @@ export const es: Record<TranslationKey, string> = {
   "footer.social": "Redes sociales",
   "footer.email": "Correo",
 
-  // Hero section. The greeting is split so its two parts sit on separate lines.
-  "hero.greetingStart": "Hola,",
-  "hero.greetingEnd": "soy Lucas",
+  // Hero section. The greeting comes before the name, which is styled separately.
+  "hero.greeting": "Hola, soy",
   "hero.badge": "Disponible para algunos proyectos",
   "hero.contact": "Contáctame",
   "hero.downloadCv": "Descargar CV",
@@ -78,7 +77,6 @@ export const es: Record<TranslationKey, string> = {
 
   // Blog.
   "blog.empty": "Los artículos llegarán pronto.",
-  "blog.readMore": "Leer más",
   "blog.minutes": "min de lectura",
   "blog.back": "Volver al blog",
   "blog.relatedProject": "Proyecto relacionado",

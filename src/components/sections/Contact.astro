@@ -3,11 +3,8 @@
 // The form sends through the "contact" action in src/actions/index.ts
 import { Icon } from "astro-icon/components";
 
-import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
 import Button from "@/components/ui/Button.astro";
-import Card from "@/components/ui/Card.astro";
 import Section from "@/components/ui/Section.astro";
-import SectionLabel from "@/components/ui/SectionLabel.astro";
 import { site } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 import { useTranslations } from "@/i18n";
@@ -22,7 +19,7 @@ const t = useTranslations(locale);
 
 // Shared look of the text fields. The stronger border keeps them easy to see.
 const fieldClasses =
-  "border-field text-ink bg-transparent aria-[invalid=true]:border-ink w-full rounded-2xl border px-4 py-3 aria-[invalid=true]:border-2";
+  "border-field text-ink bg-transparent focus:border-ink aria-[invalid=true]:border-ink w-full rounded-card border px-4 py-3 transition-colors aria-[invalid=true]:border-2";
 
 // The visible fields, so that each one is built the same way.
 const fields = [
@@ -31,16 +28,17 @@ const fields = [
 ] as const;
 ---
 
-<Section id="contact" class="space-y-12">
-  <BackgroundCircle slot="background" class="-top-24 -right-40 size-[30rem]" />
-  <SectionLabel>{t("nav.contact")}</SectionLabel>
-
-  <div class="grid gap-10 lg:grid-cols-[2fr_3fr] lg:gap-16">
+<Section id="contact" label={t("nav.contact")} number="05">
+  <div class="grid gap-12 xl:grid-cols-[2fr_3fr] xl:gap-16">
     <div class="space-y-6">
       <p class="text-lg">{t("contact.intro")}</p>
 
-      <div class="flex flex-wrap items-center gap-3">
-        <a href={`mailto:${site.email}`} class="text-ink break-all underline underline-offset-4">
+      <!-- The email address is the main call to action, so it is set large. -->
+      <div class="space-y-3">
+        <a
+          href={`mailto:${site.email}`}
+          class="text-ink hover:text-highlight decoration-line block text-2xl font-medium tracking-tight break-all underline underline-offset-8 transition-colors sm:text-3xl"
+        >
           {site.email}
         </a>
         <button
@@ -68,7 +66,7 @@ const fields = [
       </ul>
     </div>
 
-    <Card>
+    <div>
       <noscript>
         <p class="mb-4">{t("contact.noScript")}</p>
       </noscript>
@@ -139,7 +137,7 @@ const fields = [
           <p data-form-status role="status" class="text-ink text-sm"></p>
         </div>
       </form>
-    </Card>
+    </div>
   </div>
 </Section>
 

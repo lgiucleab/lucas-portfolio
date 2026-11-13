@@ -2,7 +2,6 @@
 // First section: photo, availability badge, greeting, intro text and main buttons.
 import { render } from "astro:content";
 
-import BackgroundCircle from "@/components/ui/BackgroundCircle.astro";
 import Button from "@/components/ui/Button.astro";
 import Photo from "@/components/ui/Photo.astro";
 import Section from "@/components/ui/Section.astro";
@@ -35,36 +34,30 @@ const cvPath = `/public/cv/cv-${locale}.pdf`;
 const hasCv = cvPath in cvFiles;
 ---
 
-<Section id="hero" class="flex min-h-[calc(100dvh-5rem)] flex-col justify-center gap-8">
-  <Fragment slot="background">
-    <BackgroundCircle class="-top-32 -right-32 size-[30rem]" />
-    <BackgroundCircle class="-bottom-48 -left-32 size-[24rem]" />
-  </Fragment>
-
+<Section id="hero" class="flex min-h-[calc(85dvh-5rem)] flex-col justify-end gap-10">
   <div class="flex flex-wrap items-center gap-4">
-    <Photo name="avatar" alt={t("photo.avatar")} width={160} class="size-20 rounded-full" />
+    <Photo name="avatar" alt={t("photo.avatar")} width={160} class="size-14 rounded-full" />
     <a
       href={linkedin?.href}
       target="_blank"
       rel="noopener noreferrer"
-      class="border-line text-ink hover:border-ink inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors"
+      class="text-ink hover:text-highlight inline-flex items-center gap-2 font-mono text-xs transition-colors"
     >
       <!-- Small dot with a soft pulse, like a live status light. -->
       <span aria-hidden="true" class="relative flex size-2">
-        <span class="bg-ink absolute size-full rounded-full motion-safe:animate-ping"></span>
-        <span class="bg-ink relative size-2 rounded-full"></span>
+        <span class="bg-highlight absolute size-full rounded-full motion-safe:animate-ping"></span>
+        <span class="bg-highlight relative size-2 rounded-full"></span>
       </span>
       {t("hero.badge")}
     </a>
   </div>
 
-  <!-- The second line shifts right on wide screens, like the staggered title in the design. -->
-  <h1 class="text-display leading-none font-semibold">
-    <span class="block">{t("hero.greetingStart")}</span>
-    <span class="block sm:text-right">{t("hero.greetingEnd")}</span>
+  <!-- The name is an <em>, so it takes the serif italic and the warm highlight color. -->
+  <h1 class="text-display leading-[0.95] font-medium tracking-[-0.045em]">
+    {t("hero.greeting")} <em>Lucas</em>
   </h1>
 
-  <div class="max-w-text text-lg">
+  <div class="max-w-text text-lg leading-relaxed">
     <Intro />
   </div>
 

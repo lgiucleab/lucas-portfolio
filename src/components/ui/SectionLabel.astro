@@ -1,20 +1,25 @@
 ---
-// Section heading in the design's code style: "... /Projects ...".
-// Write only the name between the tags. The dots and slash are added here.
+// Section heading in the editorial style: a small mono number, then the title.
+// Write only the title between the tags: <SectionLabel number="02">Projects</SectionLabel>
 
 interface Props {
+  // Two-digit position in the page, such as "02". Optional.
+  number?: string;
   // Heading level, so the page outline stays correct.
   as?: "h2" | "h3";
 }
 
-const { as: Element = "h2" } = Astro.props;
+const { number, as: Element = "h2" } = Astro.props;
 ---
 
-<!-- "flex" drops the line breaks below, which would otherwise show as spaces.
-     "whitespace-pre" keeps the one space written before the closing dots. -->
-<Element class="text-ink font-mono flex text-base font-medium whitespace-pre">
-  {/* The decoration is hidden from screen readers, which would read it aloud. */}
-  <span aria-hidden="true">... /</span>
-  <slot />
-  <span aria-hidden="true"> ...</span>
+<Element class="flex items-baseline gap-3 text-base font-medium">
+  {/* The number is decoration, so screen readers skip it. */}
+  {number && (
+    <span aria-hidden="true" class="text-muted font-mono text-xs">
+      {number}
+    </span>
+  )}
+  <span>
+    <slot />
+  </span>
 </Element>
