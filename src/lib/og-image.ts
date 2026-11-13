@@ -1,7 +1,9 @@
-// Draws the Open Graph preview images at build time, in the site's dark style.
+// Draws the Open Graph preview images at build time, in the site's editorial "paper" style.
 // Satori turns the layout into an SVG, and Resvg turns that SVG into a PNG.
-import titleFontFile from "@fontsource/fira-code/files/fira-code-latin-600-normal.woff?inline";
-import bodyFontFile from "@fontsource/open-sans/files/open-sans-latin-400-normal.woff?inline";
+// Satori cannot read .woff2, so these are the static .woff versions of the site's fonts.
+import titleFontFile from "@fontsource/geist/files/geist-latin-500-normal.woff?inline";
+import bodyFontFile from "@fontsource/geist/files/geist-latin-400-normal.woff?inline";
+import serifFontFile from "@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff?inline";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
 
@@ -9,8 +11,15 @@ import satori from "satori";
 const WIDTH = 1200;
 const HEIGHT = 630;
 
-// Dark theme colors from global.css. Images have no theme, so the values are written here.
-const COLORS = { page: "#121212", ink: "#f5f5f5", muted: "#a6a6a6", line: "#3d3d3d" };
+// Light "paper" theme colors from global.css. Images have no theme, so the values are
+// written here. Paper stands out in social feeds, which are mostly white or black.
+const COLORS = {
+  page: "#f7f6f3",
+  ink: "#141413",
+  muted: "#65645f",
+  line: "#dcd9d0",
+  highlight: "#b4400c",
+};
 
 // Empty space around the text.
 const MARGIN = 72;
@@ -50,17 +59,7 @@ export async function renderOgImage(title: string, subtitle: string): Promise<Ui
       overflow: "hidden",
     },
     [
-      // Thin background circle, like the ones on the site.
-      element({
-        position: "absolute",
-        top: -180,
-        right: -160,
-        width: 620,
-        height: 620,
-        borderRadius: 310,
-        border: `2px solid ${COLORS.line}`,
-      }),
-      // The text sits in its own layer, so the circle cannot push it around.
+      // The text sits in its own absolute layer, so long titles cannot change the frame.
       element(
         {
           position: "absolute",
@@ -72,18 +71,35 @@ export async function renderOgImage(title: string, subtitle: string): Promise<Ui
           justifyContent: "space-between",
         },
         [
-          element({ fontFamily: "Fira Code", fontSize: 30 }, "... /Lucas Giuclea Balan ..."),
-          element({ flexDirection: "column", gap: 28 }, [
+          // Top: name, with the serif accent word as on the site.
+          element({ alignItems: "baseline", gap: 10, fontSize: 32 }, [
+            element({ fontFamily: "Geist", fontWeight: 500, letterSpacing: -0.6 }, "Lucas"),
+            element(
+              { fontFamily: "Instrument Serif", fontSize: 36, color: COLORS.highlight },
+              "Giuclea",
+            ),
+          ]),
+          // Bottom: title and subtitle above a hairline, like a section on the site.
+          element({ flexDirection: "column", gap: 24 }, [
             element(
               {
-                fontFamily: "Fira Code",
-                fontSize: title.length > LONG_TITLE ? 60 : 84,
-                lineHeight: 1.1,
+                fontFamily: "Geist",
+                fontWeight: 500,
+                fontSize: title.length > LONG_TITLE ? 60 : 88,
+                lineHeight: 1.02,
+                letterSpacing: title.length > LONG_TITLE ? -1.8 : -3,
               },
               title,
             ),
             element(
-              { fontFamily: "Open Sans", fontSize: 32, lineHeight: 1.3, color: COLORS.muted },
+              {
+                fontFamily: "Geist",
+                fontSize: 30,
+                lineHeight: 1.35,
+                color: COLORS.muted,
+                paddingBottom: 28,
+                borderBottom: `2px solid ${COLORS.line}`,
+              },
               shortSubtitle,
             ),
           ]),
@@ -96,8 +112,9 @@ export async function renderOgImage(title: string, subtitle: string): Promise<Ui
     width: WIDTH,
     height: HEIGHT,
     fonts: [
-      { name: "Fira Code", data: fontBytes(titleFontFile), weight: 600, style: "normal" },
-      { name: "Open Sans", data: fontBytes(bodyFontFile), weight: 400, style: "normal" },
+      { name: "Geist", data: fontBytes(titleFontFile), weight: 500, style: "normal" },
+      { name: "Geist", data: fontBytes(bodyFontFile), weight: 400, style: "normal" },
+      { name: "Instrument Serif", data: fontBytes(serifFontFile), weight: 400, style: "normal" },
     ],
   });
 
