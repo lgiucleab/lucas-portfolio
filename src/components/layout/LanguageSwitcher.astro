@@ -22,11 +22,12 @@ const currentPath = pathWithoutLocale(Astro.url.pathname);
           href={localizedPath(code, currentPath)}
           hreflang={code}
           lang={code}
-          aria-label={localeNames[code]}
+          aria-label={`${code}, ${localeNames[code]}`}
           aria-current={code === locale ? "true" : undefined}
           data-language-link={code}
           class="inline-flex min-h-6 min-w-6 items-center text-muted hover:text-ink aria-[current]:text-ink capitalize transition-colors aria-[current]:underline"
         >
+          {/* The spoken name above starts with this visible code (WCAG "label in name"). */}
           {code}
         </a>
       </li>
