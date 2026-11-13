@@ -211,6 +211,11 @@
   background-color: var(--theme-surface);
 }
 
+/* In light mode code sits on white: GitHub's light code colors need it for 4.5:1 contrast. */
+[data-theme="light"] .astro-code {
+  background-color: #ffffff;
+}
+
 /* 6. SCROLL REVEAL ------------------------------------------------------------
  * Add class="reveal" to fade an element in as it scrolls into view.
  * This is pure CSS, so with no support or reduced motion the element simply stays visible.
